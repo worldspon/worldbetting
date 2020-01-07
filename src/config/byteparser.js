@@ -153,26 +153,33 @@ function parseBettingList(byteArray) {
     for(let i = 0; i < byteArray.length / objectSize; i++) {
         listArray.push({
             listUnique: byteToFloatNum(byteArray.slice(i*objectSize, i*objectSize+8)),
-            gameType: parseInt(byteArray.slice(i*objectSize+8, i*objectSize+9)),
+            bettingType: parseInt(byteArray.slice(i*objectSize+8, i*objectSize+9)),
             bettingMoney: byteToIntNum(byteArray.slice(i*objectSize+9, i*objectSize+17))
         })
     }
     return listArray;
 }
 
-function parsePrevGameResult(byteArray) {
-    console.log(byteArray);
-    const resultObject = {
-        gameRound: byteToIntNum(byteArray.slice(0, 8)),
-        ballOne: byteToIntNum(byteArray.slice(8, 9)),
-        ballTwo: byteToIntNum(byteArray.slice(9, 10)),
-        ballThree: byteToIntNum(byteArray.slice(10, 11)),
-        ballFour: byteToIntNum(byteArray.slice(11, 12)),
-        ballFive: byteToIntNum(byteArray.slice(12, 13)),
-        powerBall: byteToIntNum(byteArray.slice(13, 14)),
+function parsePrevGameResult(byteArray, gameType) {
+    if(gameType <= 4) {
+        const resultObject = {
+            gameRound: byteToIntNum(byteArray.slice(0, 8)),
+            ballOne: byteToIntNum(byteArray.slice(8, 9)),
+            ballTwo: byteToIntNum(byteArray.slice(9, 10)),
+            ballThree: byteToIntNum(byteArray.slice(10, 11)),
+            ballFour: byteToIntNum(byteArray.slice(11, 12)),
+            ballFive: byteToIntNum(byteArray.slice(12, 13)),
+            powerBall: byteToIntNum(byteArray.slice(13, 14)),
+        }
+        return resultObject;
+    } else {
+        const resultObject = {
+            gameRound: byteToIntNum(byteArray.slice(0, 8)),
+            leftResult: byteToIntNum(byteArray.slice(8, 9)),
+            rightResult: byteToIntNum(byteArray.slice(9, 10)),
+        }
+        return resultObject;
     }
-
-    return resultObject;
 }
 
 export {

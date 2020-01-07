@@ -1,0 +1,8 @@
+.contentWrap {
+    display: flex;
+    flex-flow: column;
+    padding: 10px 10px 20px;
+    border-radius: 5px;
+    background-color: #0d0f24;
+    border: 2px solid #a7a7a7;
+}

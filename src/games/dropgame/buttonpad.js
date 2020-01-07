@@ -214,11 +214,11 @@ export default class ButtonPad extends React.Component {
                 </div>
                 <div className={styles.bettingCategoryBox + ' ' + styles.bettingPowerSingle}>
                     <span className={styles.bettingCategoryTitle}>
-                        파워볼 단볼
+                        좀비볼 단볼
                     </span>
                     <div className={styles.bettingTypeButtonBox}>
                         <BettingTypeButton
-                            bettingTitle={'파워볼 홀'}
+                            bettingTitle={'좀비볼 홀'}
                             color='blue'
                             bettingTypeNum={1}
                             max={this.props.minMaxBetting[0]}
@@ -228,7 +228,7 @@ export default class ButtonPad extends React.Component {
                             changeSelectBettingTypeNum={(typeNum, min, max) => this.props.changeSelectBettingTypeNum(typeNum, min, max)}
                         />
                         <BettingTypeButton
-                            bettingTitle={'파워볼 짝'}
+                            bettingTitle={'좀비볼 짝'}
                             color='red'
                             bettingTypeNum={2}
                             max={this.props.minMaxBetting[0]}
@@ -238,7 +238,7 @@ export default class ButtonPad extends React.Component {
                             changeSelectBettingTypeNum={(typeNum, min, max) => this.props.changeSelectBettingTypeNum(typeNum, min, max)}
                         />
                         <BettingTypeButton
-                            bettingTitle={'파워볼 언더'}
+                            bettingTitle={'좀비볼 언더'}
                             color='blue'
                             bettingTypeNum={3}
                             max={this.props.minMaxBetting[2]}
@@ -248,7 +248,7 @@ export default class ButtonPad extends React.Component {
                             changeSelectBettingTypeNum={(typeNum, min, max) => this.props.changeSelectBettingTypeNum(typeNum, min, max)}
                         />
                         <BettingTypeButton
-                            bettingTitle={'파워볼 오버'}
+                            bettingTitle={'좀비볼 오버'}
                             color='red'
                             bettingTypeNum={4}
                             max={this.props.minMaxBetting[2]}
@@ -261,7 +261,7 @@ export default class ButtonPad extends React.Component {
                 </div>
                 <div className={styles.bettingCategoryBox + ' ' + styles.bettingPowerMix}>
                     <span className={styles.bettingCategoryTitle}>
-                        파워볼 조합
+                        좀비볼 조합
                     </span>
                     <div className={styles.bettingTypeButtonBox}>
                         <BettingTypeButton

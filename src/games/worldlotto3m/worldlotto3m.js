@@ -2,8 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import createWebSocket from '../../config/socketip';
 import {
-    encodeUTF8,
-    encodeUTF16,
     decodeUTF8,
     decodeUTF16,
     checkTcpData,
@@ -53,10 +51,11 @@ class WorldLotto3M extends React.Component {
         this.state = {
             staticLimitBettingMoney: 10000000000,
             logoURL: '../../../images/worldlotto3m_game_icon.png',
+            apiURL: 'worldBall3',
             userPoint: 0,
             userCommission: 0,
             gameType: 3,
-            gameTitle: 'WorldLotto Game',
+            gameTitle: 'WorldLotto',
             // 게임 회차
             gameRound: 0,
             // 게임 시간
@@ -158,7 +157,7 @@ class WorldLotto3M extends React.Component {
     }
 
     responsePrevGameResult(byteArray) {
-        const content = parsePrevGameResult(byteArray.slice(3));
+        const content = parsePrevGameResult(byteArray.slice(3), this.state.gameType);
         this.setState({
             prevGameResult: content
         });
@@ -229,7 +228,6 @@ class WorldLotto3M extends React.Component {
         const errorCode = parseInt(byteArray.slice(0,1));
         if(errorCode === 0) {
             const content = decodeUTF16(byteArray.slice(3)).split('|');
-            console.log(content);
             const bettingAllowTime = content.slice(0, 12);
             const balance = content.slice(12, 60);
             const powerBall = content.slice(60, 64);
@@ -250,7 +248,7 @@ class WorldLotto3M extends React.Component {
 
     // 유저 환경 세팅
     // 게임순서 : 파워볼 / 5분 / 3분 / 낙하 / 격파 / 가위바위보
-    // (최대베팅[1], 최소베팅[1] x8)x6 / [96]배당률[1] x10 / [156]총베팅제한
+    // (최대베팅[1], 최소베팅[1] x10)x6 / [96]배당률[1] x10 / [156]총베팅제한
     setUserGameInfo(byteArray) {
         const errorCode = parseInt(byteArray.slice(0,1));
         if(errorCode === 0) {
@@ -260,9 +258,9 @@ class WorldLotto3M extends React.Component {
             // const totalBettingLimit = content.slice(158, 159);
 
             this.setState({
-                minMaxBetting: content.slice(32, 48),
-                allocation: content.slice(116, 126),
-                totalBettingLimit: content[158]
+                minMaxBetting: content.slice(40, 60),
+                allocation: content.slice(140, 150),
+                totalBettingLimit: content[182]
             });
             
         } else {
@@ -518,7 +516,7 @@ class WorldLotto3M extends React.Component {
     // 게임 결과 비동기 통신
     async getGameResult() {
         try {
-            const promiseResult = await promiseModule.get(`/api/game/worldBall3/${this.state.resultCurrentPage}`);
+            const promiseResult = await promiseModule.get(`/api/game/${this.state.apiURL}/${this.state.resultCurrentPage}`);
             const resultData = JSON.parse(promiseResult);
             if(resultData.game !== undefined) {
                 this.createResultListJSX(resultData.game);
@@ -567,6 +565,12 @@ class WorldLotto3M extends React.Component {
         });
     }
 
+    resetPrevGameResult() {
+        this.setState({
+            prevGameResult: null
+        })
+    }
+
     componentDidMount() {
         this.connectWebSocket()
     }
@@ -594,11 +598,13 @@ class WorldLotto3M extends React.Component {
                             gameType={this.state.gameType}
                             allocation={this.state.allocation}
                             gameTitle={this.state.gameTitle}
+                            gameRound={this.state.gameRound}
                             prevGameResult={this.state.prevGameResult}
                             gameCount={this.state.gameCount}
                             selectBettingTypeNum={this.state.selectBettingTypeNum}
                             bettingMoney={this.state.bettingMoney}
                             bettingList={this.state.bettingList}
+                            resetPrevGameResult={() => this.resetPrevGameResult()}
                             changeSelectBettingTypeNum={(typeNum, min, max) => this.changeSelectBettingTypeNum(typeNum, min, max)}
                             changeBettingMoney={(bettingMoney, inputFlag) => this.changeBettingMoney(bettingMoney, inputFlag)}
                             bettingMoneyClear={() => this.bettingMoneyClear()}
@@ -627,7 +633,7 @@ class WorldLotto3M extends React.Component {
                         this.state.gameResultComponent &&
                         <div className={styles.contentWrap}>
                             <GameResult
-                                gameTitle='DHLotto'
+                                gameTitle={this.state.gameTitle}
                                 destroyGameResultComponent={() => {this.destroyGameResultComponent()}}
                                 gameResultThText={this.state.gameResultThText}
                                 gameResultList={this.state.gameResultList}

@@ -12,19 +12,19 @@ export default class BettingList extends React.Component {
     createBettingListJSX(data) {
         const listArray = [];
         for(const [index, obj] of Object.entries(data)) {
-            const typeObject = searchGameType(obj.gameType);
-            const allocationMoney = Math.round(searchAllocation(this.props.gameType, obj.gameType, this.props.allocation) * obj.bettingMoney);
+            const typeObject = searchGameType(obj.bettingType, this.props.gameType);
+            const allocationMoney = Math.round(searchAllocation(this.props.gameType, obj.bettingType, this.props.allocation) * obj.bettingMoney);
             listArray.push(
             <tr className={styles.bettingListRow}
                 key={index}
             >
                 <td>{parseInt(index) + 1}</td>
                 <td>{this.props.gameRound}</td>
-                <td>({typeObject.ballType})<span className={styles.noBreakWords}>{typeObject.gameType}</span></td>
+                <td>({typeObject.headType})<span className={styles.noBreakWords}>{typeObject.bettingType}</span></td>
                 <td>{new Intl.NumberFormat().format(obj.bettingMoney)}</td>
                 <td>{new Intl.NumberFormat().format(allocationMoney)}</td>
                 <td>
-                    <button className={styles.bettingCancelButton} data-type={obj.gameType} data-unique={obj.listUnique} onClick={(e) => this.props.requestCancelBetting(e)}>취소</button>
+                    <button className={styles.bettingCancelButton} data-type={obj.bettingType} data-unique={obj.listUnique} onClick={(e) => this.props.requestCancelBetting(e)}>취소</button>
                 </td>
             </tr>);
         }

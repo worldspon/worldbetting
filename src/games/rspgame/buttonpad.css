@@ -1,0 +1,232 @@
+/* 베팅 버튼 모음 상자 */
+.bettingButtonBoard {
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: (1fr)[6];
+    grid-template-columns: repeat(6, 1fr);
+    -ms-grid-rows: auto;
+    grid-template-rows: auto;
+    border-radius: 0 0 5px 5px;
+}
+
+/* 베팅 카테고리별 상자 */
+.bettingCategoryBox {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    background-color: #0d0f24;
+}
+
+/* 베팅 카테고리 제목 */
+.bettingCategoryTitle {
+    width: 100%;
+    font-size: 1.6rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px 0;
+    color: #FFF;
+    background-color: #020307;
+}
+
+/* 베팅 버튼 공통 css */
+.bettingTypeButtonBox {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    padding: 10px;
+    border-top: none;
+}
+
+/* 베팅 종류 선택 첫번째 상자 왼쪽 하단 모서리 radius */
+.bettingButtonBoard > .bettingCategoryBox:first-of-type {
+    border-radius: 0 0 0 5px;
+}
+
+/* 베팅 종류 선택 마지막 상자 오른쪽 하단 모서리 radius */
+.bettingButtonBoard > .bettingCategoryBox:last-of-type {
+    border-radius: 0 0 5px 0;
+}
+
+.bettingButtonBoard > .bettingCategoryBox > .bettingCategoryTitle {
+    border-top: 2px solid #494c67;
+    border-bottom: 2px solid #494c67;
+}
+
+.bettingButtonBoard > .bettingCategoryBox:not(:first-of-type) > .bettingCategoryTitle {
+    border-left: 2px solid #494c67;
+}
+
+/* 베팅 타입 선택버튼 */
+.bettingTypeButton {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    color: #FFF;
+    border: none;
+    padding: 25px 0;
+    box-shadow: inset 0 0 10px rgba(18, 19, 34, 0.75);
+    /* 버튼 선택시 */
+}
+
+.bettingTypeButtonSelect {
+    box-shadow: 0 0 0 4px #ffed98;
+}
+
+/* 베팅 버튼 입체효과 적용 */
+.bettingTypeButton::before {
+    content: "";
+	display: block;
+	height: 1px;
+	position: absolute;
+	top: 2px;
+    left: 50%;
+	transform: translateX(-50%);
+    width: 90%;
+	background: radial-gradient(circle, #FFF 70%, transparent);
+	border-radius: 100%;
+	opacity: 0.7;
+}
+
+.bettingTypeButtonBox > button:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+/* 파란색 버튼 */
+.bettingBlueButton {
+    background-image: linear-gradient(#074cd1, #0286f9);
+    border-radius: 5px;
+}
+
+/* 붉은색 버튼 */
+.bettingRedButton {
+    background-image: linear-gradient(#c92d4f, #e9588e);
+    border-radius: 5px;
+}
+
+/* 회색 버튼 */
+.bettingGrayButton {
+    background-image: linear-gradient(#242a4e, #545d90);
+    border-radius: 5px;
+}
+
+/* 버튼 내부 타입 span */
+.bettingType {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* 버튼 내부 배당률 span */
+.bettingAllocation {
+    font-size: 1.2rem;
+}
+
+/* 타입 버튼 별 GRID 위치 설정 */
+.bettingLeftRight {
+    -ms-grid-column: 1;
+    -ms-grid-column-span: 2;
+    grid-column: 1 / span 2;
+    -ms-grid-row: 1;
+    grid-row: 1;
+}
+
+.bettingWinLose {
+    -ms-grid-column: 3;
+    -ms-grid-column-span: 3;
+    grid-column: 3 / span 3;
+    -ms-grid-row: 1;
+    grid-row: 1;
+}
+
+.bettingTotalBreakCount {
+    -ms-grid-column: 6;
+    grid-column: 6;
+    -ms-grid-row: 1;
+    grid-row: 1;
+}
+/* 타입 버튼 별 GRID 위치 설정 */
+
+/* 대중소/홀짝 조합 카테고리 구조를 위한 설정 */
+.leftRightInnerWrap, .winLoseInnerWrap {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    padding: 0 5px;
+    background-color: transparent;
+}
+
+
+.winLoseInnerWrap, .bettingTotalBreakCount > .bettingTypeButtonBox {
+    border-left: 2px solid #494c67;
+}
+
+
+/* 모바일 시작 */
+@media screen and (max-width : 1024px) {
+
+    .bettingButtonBoard {
+        -ms-grid-columns: (1fr)[3];
+        grid-template-columns: repeat(3, 1fr);
+        -ms-grid-rows: (auto)[2];
+        grid-template-rows: repeat(2, auto);
+        border-radius: 0 0 5px 5px;
+    }
+
+    /* 타입 버튼 별 GRID 위치 설정 */
+    .bettingLeftRight {
+        -ms-grid-column: 1;
+        -ms-grid-column-span: 2;
+        grid-column: 1 / span 2;
+        -ms-grid-row: 1;
+        grid-row: 1;
+    }
+
+    .bettingWinLose {
+        -ms-grid-column: 1;
+        -ms-grid-column-span: 3;
+        grid-column: 1 / span 3;
+        -ms-grid-row: 2;
+        grid-row: 2;
+    }
+
+    .bettingTotalBreakCount {
+        -ms-grid-column: 3;
+        grid-column: 3;
+        -ms-grid-row: 1;
+        grid-row: 1;
+    }
+    /* 타입 버튼 별 GRID 위치 설정 */
+
+    /* 베팅 종류 선택 첫번째 상자 왼쪽 하단 모서리 radius 해제 */
+    .bettingButtonBoard > .bettingCategoryBox:first-of-type {
+        border-radius: 0;
+    }
+
+    /* 마지막숫자 베팅 상자 오른쪽 하단 모서리 radius 해제 */
+    .bettingButtonBoard > .bettingCategoryBox:last-of-type {
+        border-radius: 0;
+    }
+
+    /* 대중소 조합 radius 추가 */
+    .bettingButtonBoard > .bettingCategoryBox:nth-of-type(2) {
+        border-radius: 0 0 5px 5px;
+    }
+
+    /* 타이틀 border-left 해제 */
+    .bettingButtonBoard > .bettingCategoryBox:not(:first-of-type) > .bettingCategoryTitle {
+        border-left: none;
+    }
+
+    /* 마지막숫자 베팅 박스 border-left 추가 */
+    .bettingButtonBoard > .bettingCategoryBox:last-of-type > .bettingCategoryTitle {
+        border-left: 2px solid #494c67;
+    }
+
+    .winLoseInnerWrap {
+        border-left: none;
+    }   
+}

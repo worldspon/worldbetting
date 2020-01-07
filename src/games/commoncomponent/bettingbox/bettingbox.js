@@ -2,21 +2,26 @@ import React from 'react';
 import styles from './bettingbox.css';
 import SlipPad from '../slippad/slippad';
 import BettingList from '../bettinglist/bettinglist'
+import PrevResultModal from '../../commoncomponent/prevresultmodal/prevresultmodal';
 
 export default class BettingBox extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            year: new Date().getFullYear(),
-            month: (new Date().getMonth() + 1) < 10 ? '0' + (new Date().getMonth() + 1) : new Date().getMonth() + 1,
-            day: new Date().getDate() < 10 ? '0' + new Date().getDate() : new Date().getDate(),
             resultModal: false
         }
-        this.gameResultModal = React.createRef();
     }
-    
+
     static getDerivedStateFromProps(props, state) {
-        if(props.gameCount === 180 && !state.resultModal) {
+        if(props.gameType <= 2 && props.gameCount === 300 && !state.resultModal) {
+            return {
+                resultModal: true
+            };
+        } else if(props.gameType >= 3 && props.gameType <= 5 && props.gameCount === 180 && !state.resultModal) {
+            return {
+                resultModal: true
+            };
+        } else if(props.gameType == 6 && props.gameCount === 120 && !state.resultModal) {
             return {
                 resultModal: true
             };
@@ -28,44 +33,27 @@ export default class BettingBox extends React.Component {
     destroyResultModal() {
         this.setState({
             resultModal: false
-        })
+        });
+        this.props.resetPrevGameResult();
     }
 
-    currentGameResultModal(data) {
-        return (<div className={styles.gameResultModalWrap} ref={this.gameResultModal}>
-                    <div className={styles.gameResultModal}>
-                        {data === null ? '' :
-                            <p className={styles.gameResultTitle}>
-                                {this.state.year}-{this.state.month < 10 ? '0' + this.state.month : this.state.month}-{this.state.day < 10 ? '0' + this.state.day : this.state.day} [140] {data.gameRound} 회차
-                                <img className={styles.gameResultModalCancelButton} src={require('../../../images/cancel_button.png')} onClick={() => this.destroyResultModal()} />
-                            </p>
-                        }
-                        {data === null ? '' :
-                            <div className={styles.gameResult}>
-                                <span className={styles.resultBallSpan}>{data.ballOne}</span>
-                                <span className={styles.resultBallSpan}>{data.ballTwo}</span>
-                                <span className={styles.resultBallSpan}>{data.ballThree}</span>
-                                <span className={styles.resultBallSpan}>{data.ballFour}</span>
-                                <span className={styles.resultBallSpan}>{data.ballFive}</span>
-                                <span className={styles.resultBallSpan}>{data.powerBall}</span>
-                            </div>
-                        }
-                    </div>
-                </div>);
-    }
-
-    componentDidMount() {
-        // setTimeout(() => {
-        //     this.setState({
-        //         clear: true
-        //     })
-        // }, 3000)
+    destroyTimer() {
+        setTimeout(() => {
+            this.destroyResultModal();
+        }, 5000)
     }
 
     render() {
         return (
             <div className={styles.bettingWrap}>
-                { this.state.resultModal && this.currentGameResultModal(this.props.prevGameResult) }
+                { this.state.resultModal &&
+                    <PrevResultModal
+                        prevGameResult={this.props.prevGameResult}
+                        gameType={this.props.gameType}
+                        resetPrevGameResult={() => this.props.resetPrevGameResult()}
+                        destroyResultModal={() => this.destroyResultModal()}
+                        destroyTimer={() => this.destroyTimer()}
+                    />}
                 <div className={styles.gameTitleBox}>
                     <span className={styles.gameTitle}>{this.props.gameTitle}</span>
                     <span>Online Premium Sports Books.</span>
