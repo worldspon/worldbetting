@@ -1,0 +1,50 @@
+.signUpHeaderLine {
+    margin-bottom: 40px;
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center;
+    color: #FFF;
+}
+
+.signUpForm {
+    display: flex;
+    flex-flow: column;
+    width: 90%;
+    max-width: 550px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: inset 0 0px 8px 3px rgba(29, 31, 50, 0.9);
+    background: linear-gradient(to bottom, #28283f, #0d0e18);
+}
+
+.signUpForm input {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 20px;
+    font-size: 1.5rem;
+    border-radius: 5px;
+    border: 1px solid rgba(0,0,0, 0.7);
+    box-shadow: 0px -2px 3px rgba(0,0,0, 0.8), 0px 1px 2px rgba(255,255,255, 0.6);
+}
+
+.signUpMessage {
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+    color: #fff;
+    font-size: 2rem;
+}
+
+.signUpButton {
+    width: 100%;
+    padding: 15px 0;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    background: linear-gradient(#089fe8, #0466b6);
+    box-shadow: inset 2px 0 2px rgba(0,0,0, 0.3), inset 0 -3px 5px rgba(0,0,0, 0.7), inset -2px 0 2px rgba(0,0,0, 0.3), inset 0 2px 2px rgba(255,255,255, 0.8), 0 4px 4px -3px rgba(255,255,255, 0.2);
+}

@@ -1,0 +1,71 @@
+﻿==========로그인검증==========
+커맨드 : 100002
+REQ : 유니크 + 아이디
+
+===========로그아웃============
+커맨드 : 100003
+REQ : 유니크 + 아이디
+
+==========게임입장, 퇴장==========
+커맨드 : 100300
+REQ : 유니크 + 게임타입
+게임타입은 0은 로비 / 1은 동행 / 2는 5분 / 3는 3분 / 4는 낙하 / 5는 격파 / 6은 가위바위보
+REC : 
+[0] // 입장성공..
+[1] // 통신이 원활하지 않아 로그인화면으로 이동합니다. (멘트를 띄운후 확인을누르면 로비화면으로 이동)
+
+==========유저금액 최신화==========
+커맨드 : 100100
+REQ : 유니크
+REC : 
+[0] // [0]point [1]Fee..
+
+==========정보세팅==========
+커맨드 : 100010
+REQ : 유니크
+REC : 
+[0]휴대폰 [1]은행명 [2]예금주 [3]계좌번호 [4]코인명 [5]코인주소 [6]충환전세팅..
+
+충환전세팅.. [0]계좌 [1]코인
+
+==========정보수정==========
+커맨드 : 100020
+REQ : 유니크 + 비밀번호 + 휴대폰 + 은행명 + 예금주 + 계좌번호 + 코인명 + 지갑주소
+REC : 
+[0] 성공
+
+==========코인리스트==========
+커맨드 : 110100
+REQ : 유니크
+REC : stCoin구조체
+stCoin
+public char[] arCoinName = new char[20];
+public char[] arCoinNumber = new char[100];
+
+==========충환전신청==========
+커맨드 : 110000
+REQ : (계좌) 유니크 + 타입 + 뱅크유저 + 은행명 + 계좌번호 + 금액
+(코인) 유니크 + 타입 + 빈칸 + 코인명 + 지갑주소 + 코인개수
+타입[1]충전 [2]환전
+REC : 
+[0] 신청이 완료되었습니다.
+[1] 로비에서만 신청이 가능합니다. 
+[2] 올바르지 않은 충환전금액입니다.
+[3] 환전금액이 부족합니다.
+
+==========충, 환전 리스트==========
+커맨드 : 110010
+REQ : 유니크 + 타입
+타입 [1]충전 [2]환전..
+REC : stINOUTMONEY구조체
+stINOUTMONEY
+public long nUniqueID;
+public long nUserUniqueID;
+public char[] arrayCharCreateDate = new char[25];
+public char[] arrayCharResultDate = new char[25];
+public long nPoint;
+public double fCoin;
+public byte nStay;
+public char[] arrayCharBankName = new char[20];
+public char[] arrayCharBankNumber = new char[100];
+public char[] arrayCharBankUser = new char[20];

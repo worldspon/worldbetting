@@ -1,0 +1,65 @@
+.exChangeApplyBox {
+    width: 100%;
+    border: 2px solid #a8a8a8;
+    border-radius: 5px;
+}
+
+.exChangeTitle {
+    position: relative;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 2.5rem;
+    color: white;
+    border-radius: 5px 5px 0 0;
+    background: linear-gradient(#48508a 0%, #0f152b 100%);
+}
+
+.cancelButton {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    width: 30px;
+    cursor: pointer;
+}
+
+.exChangeContentBox {
+    background-color: #0d0f24;
+    border-radius: 0 0 5px 5px;
+}
+
+.tapTitleWrap {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 20px 0;
+}
+
+.exChangeApplyTap, .exChangeListTap {
+    width: 100%;
+    padding: 20px 0;
+    font-size: 2rem;
+    color: #b1b1b1;
+    text-align: center;
+    border-radius: 10px 10px 0 0;
+    background: linear-gradient(#244d6f, #204666);
+    cursor: pointer;
+}
+
+.exChangeApplyTap {
+    margin-right: 10px;
+}
+
+.activeTap {
+    color: #fff;
+    background: linear-gradient(#08a1e9, #045aab);
+}
+
+.tapContentWrap {
+    border-top: 2px solid #0d82d5;
+    padding: 20px;
+}
+
+@media screen and (max-width : 1024px) {
+    .tapContentWrap {
+        padding: 10px;
+    }
+}

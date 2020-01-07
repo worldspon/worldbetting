@@ -1,0 +1,73 @@
+.applyListTable {
+    table-layout: auto;
+    width: 100%;
+    text-align: center;
+    border-spacing: 0px 10px;
+    border-collapse: separate;
+}
+
+.mobileTableElement {
+    display: none;
+}
+
+.applyListTable th {
+    padding: 10px 0;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #FFF;
+}
+.listRow td {
+    width: auto;
+    padding: 20px 0;
+    background-color: #282c59;
+    vertical-align: middle;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    color: #FFF;
+}
+.userDeposit {
+    border-radius: 5px 0 0 5px;
+}
+
+.listState {
+    border-radius: 0 5px 5px 0;
+}
+
+.userexchangeMoney {
+    display: block;
+    margin-bottom: 5px;
+    color: #ffeb8f;
+}
+
+.userDepositCoin {
+    display: block;
+    color: #ff3e75;
+}
+
+.accountInfo p:not(:last-of-type) {
+    margin-bottom: 5px;
+}
+
+.applyConfirmDate p:not(:last-of-type) {
+    margin-bottom: 5px;
+}
+
+
+
+@media screen and (max-width : 768px) {
+    .pcTableElement {
+        display: none;
+    }
+    .mobileTableElement {
+        display: block;
+    }
+
+    .applyListTable th {
+        font-size: 1.5rem;
+    }
+
+    .listRow td {
+        font-size: 1.2rem;
+    }
+}

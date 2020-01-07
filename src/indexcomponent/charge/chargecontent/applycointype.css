@@ -1,0 +1,123 @@
+.coinTypeWrap {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.coinRow {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.companyCoinWallet {
+    width: 100%;
+    margin-right: 10px;
+    padding: 10px;
+    font-size: 1.5rem;
+    color: #555;
+    border: 0;
+    border-radius: 5px;
+}
+
+.walletCopyButton {
+    flex-shrink: 0;
+    padding: 10px 30px;
+    color: #FFF;
+    font-size: 1.3rem;
+    background: linear-gradient(#4e4e70, #2e3154);
+    border: 0;
+    border-radius: 5px;
+}
+
+.walletInfoBox {
+    display: flex;
+    align-items: center;
+}
+
+.userCoinWrap {
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    text-align: right;
+}
+
+.userInputWrap {
+    display: flex;
+    align-items: center;
+}
+
+.userInputWrap:first-of-type {
+    margin-bottom: 10px;
+}
+
+.userInputWrap label {
+    width: 60px;
+    margin-right: 10px;
+    font-size: 1.5rem;
+    color: #FFF;
+    flex-shrink: 0;
+}
+
+.userCoinWrap input {
+    width: 100%;
+    margin-right: 10px;
+    padding: 10px;
+    font-size: 1.5rem;
+    color: #555;
+    border: 0;
+    border-radius: 5px;
+}
+
+.qrCodeImg {
+    width: 120px;
+    margin-left: 10px;
+}
+
+.applyCancelBox button {
+    width: 20%;
+    margin-top: 20px;
+    padding: 15px 0;
+    color: #FFF;
+    font-size: 1.8rem;
+    border: 0;
+    border-radius: 5px;
+}
+
+.applyCancelBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.applyButton {
+    margin-right: 10px;
+    background: linear-gradient(#08a1e9, #0566b5);
+}
+
+.cancelButton {
+    background: linear-gradient(#a6a6ab, #707175);
+}
+
+@media screen and (max-width : 768px) {
+    /* 코인 타입 */
+    .coinRow {
+        flex-flow: column;
+        align-items: center;
+    }
+
+    .companyCoinWallet {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .walletCopyButton {
+        align-self: flex-end;
+    }
+
+    .qrCodeImg {
+        width: 100px;
+        margin-left: 10px;
+    }
+}

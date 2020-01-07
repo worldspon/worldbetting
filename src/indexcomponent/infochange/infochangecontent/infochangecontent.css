@@ -1,0 +1,92 @@
+.infoChangeContentWrap {
+    margin: 0 auto;
+}
+
+.infoChangeMoney {
+    width: 50%;
+}
+
+/* 계좌 타입 */
+.infoRows {
+    display: flex;
+    align-items: center;
+    font-size: 1.3rem;
+}
+
+.infoRows:not(:last-of-type) {
+    margin-bottom: 10px;
+}
+
+.rowTitle {
+    width: 120px;
+    flex-shrink: 0;
+    color: #FFF;
+    text-align: left;
+    margin-right: 10px;
+}
+
+.infoRows input {
+    padding: 10px;
+    color: #555;
+    border: 0;
+    border-radius: 5px;
+}
+
+.currentPw, .changePw, .checkPw, .phoneNum, .accountNum, .userCoinName, .userCoinWallet {
+    width: 50%;
+}
+
+.bankName, .accountUser {
+    width: 20%;
+}
+
+.bankName {
+    margin-right: 10px;
+}
+
+.infoChangeCancelBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.infoChangeCancelBox button {
+    width: 20%;
+    margin-top: 20px;
+    padding: 15px 0;
+    color: #FFF;
+    font-size: 1.8rem;
+    border: 0;
+    border-radius: 5px;
+}
+
+.infoChangeButton {
+    margin-right: 10px;
+    background: linear-gradient(#08a1e9, #0566b5);
+}
+
+.cancelButton {
+    background: linear-gradient(#a6a6ab, #707175);
+}
+
+@media screen and (max-width : 1024px) {
+    .infoChangeContentWrap {
+        padding: 10px;
+    }
+
+}
+
+@media screen and (max-width : 768px) {
+    .currentPw, .changePw, .checkPw, .phoneNum, .accountNum, .userCoinName, .userCoinWallet {
+        width: 80%;
+    }
+
+    .bankName, .accountUser {
+        width: 100%;
+    }
+
+    .infoChangeCancelBox button {
+        width: 30%;
+        padding: 10px 0;
+    }
+}

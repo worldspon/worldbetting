@@ -1,0 +1,12 @@
+.lobbyWrap {
+    padding: 0 10px;
+    min-height: 100%;
+    padding-bottom: 10px;
+    background-color: #1e1e1e;
+}
+
+@media screen and (max-width : 1024px) {
+    .lobbyWrap {
+        padding: 0;
+    }
+}

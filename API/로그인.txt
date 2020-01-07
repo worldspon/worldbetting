@@ -1,0 +1,212 @@
+﻿-------------- worldspon.net 웹 통신 HTTP API --------------
+1. 해당 API는 HTTP Protocol을 사용합니다.
+2. 모든 응답은 application/json MIME 타입으로 응답합니다.
+3. 'http://211.192.165.100:6061/' 주소는 실제 운영되고 있는 운영 환경의 서버 주소입니다.
+테스트를 하실 때에는 'http://211.192.165.100:6060/' 주소로 테스트를 해주세요.
+모든 테스트가 완료되면 이후 'http://211.192.165.100:6061/' 주소로 변경해주시면 됩니다.
+ex) 
+개발 테스트 시	: http://211.192.165.100:6060/
+운영서버 배포 시	: http://211.192.165.100:6061/
+-----------------------------------------------------
+
+
+
+
+0. RSA 공개키 발급 요청
+URL: /api/publicKey
+TYPE: GET
+응답 형식: 
+{
+	publicKey: RSA 암호화용 공개 키
+}
+
+에러 발생 형식: 
+{
+	error: {
+		errorCode: 에러 코드
+		name: 에러명
+		message: 에러 내용
+	}
+}
+#################################################
+응답 예제: 
+{
+	"publicKey": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCzR4GUiL2pjYRCKJT0gboKZDdjqxW2y19dp77/zLz6rG2hD3rrznH9RPLd0DFqwpgvMBP2uYN9mLWBhXhQ8332t791TLGep2bP8ZqhrDrmJ7z3z8yzgmJGPIwwgxf4Nlr9nXCfWKiOiZ3Q2Kaitfsepcd81PH2wfV5lrLhl1kwIQIDAQAB"
+}
+
+에러 발생시: 
+{
+	"error": {
+		"errorCode": 500, 
+		"name": "Internal Server Error", 
+		"message": "잠시 후 다시 시도해주세요."
+	}
+}
+#################################################
+참고사항※※※※※※※※※※※※※※※※※※※※※※※※※
+1. 키는 1024비트 크기로 생성합니다.
+
+에러패턴
+- 이미 로그인 상태에서 로그인 시도할 때 / 403: 로그아웃 후 이용해주세요.
+※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
+
+
+
+
+
+
+
+
+1. 로그인
+URL: /api/login
+TYPE: POST
+파라미터: 
+{
+	username: RSA 공개 키로 암호화한 스마트 아이디
+	password: RSA 공개 키로 암호화한 비밀번호
+	url: 클라이언트 URL 정보
+}
+응답 형식: 
+{
+	uniqueId: 사용자 고유 번호
+	trademark: 스마트 아이디
+}
+
+에러 발생 형식: 
+{
+	error: {
+		errorCode: 에러 코드
+		name: 에러명
+		message: 에러 내용
+	}
+}
+#################################################
+파라미터 예제:
+{
+	username: "d1G+UA+biCk/vSEfJKE7NMVr22jRSg8OL2P0NA10nn6mE9mNPTETY3qNUL0jcWmEBskdR4Ma71Kii/2ySS59gtgg026y41CYwT5dxbwCH1R4hgMjOIURVWycSBN7g0ybDJa5gou9fqfUGLqr8Ug/5MwDTWmiJcp30+FOolRVm9U="
+	password: "gXLSAosKe48fMrldxptmA3EJW1LJpOvTGl9Ztztde2sAHlGPta2GV7HQOeqBQCNBuchioDvElAJDITbESeNZBdNf96wfDi8vf7sJoRQEZkxR7tZbV8lQqaJBrCju/DwQWF9Sj8WapwsjW+CRuL0Xo0ysH7eThI8nayijLDoQPlo="
+	url: "www.wlotto.net"
+}
+응답 예제: 
+{
+	"uniqueId": 13
+	"trademark": "한석봉"
+}
+
+에러 발생시: 
+{
+	"error": {
+		"errorCode": 500, 
+		"name": "Internal Server Error", 
+		"message": "잠시 후 다시 시도해주세요."
+	}
+}
+#################################################
+참고사항※※※※※※※※※※※※※※※※※※※※※※※※※
+1. 로그인에 성공하면 "wlotto-session"이름으로 세션 쿠키가 생성됩니다.
+2. 세션쿠키는 HttpOnly 옵션이므로 클라이언트에서 컨트롤할 수 없습니다.
+3. 사용자가 접속한 url 정보(referrer)를 보내주세요.
+
+에러패턴
+- 이미 로그인 상태에서 로그인 시도할 때 / 401: 로그아웃 후 이용해주세요.
+- 아이디나 패스워드 데이터가 누락되었을 때 / 400: 아이디와 패스워드 모두 입력하고 시도해주세요.
+- url 정보가 누락되었을 때 / 400: 잘못된 접근입니다.
+- url 정보가 "www.wlotto.net"과 일치하지 않을 때 / 404: 존재하지 않는 사용자입니다.
+- 패스워드가 일치하지 않을 때 / 400: 패스워드가 일치하지 않습니다.
+- 존재하지 않는 사용자일 때 / 404: 존재하지 않는 사용자입니다.
+- 앱에서 이미 로그인 한 사용자일 때 / 400: WORLD BETTING 앱에서 이미 로그인 중입니다.
+- 서버에서 RSA 비공개 키를 알 수 없을 때 (값을 세션에 담아둠) / 400: 브라우저에서 쿠키를 허용하신 후 다시 시도해주세요.
+- 유효하지 않은 RSA 공개 키로 시도 / 500: 잠시 후 다시 시도해주세요.
+- 아이디나 패스워드 데이터가 암호화되지 않고 시도했을 때 / 500: 잠시 후 다시 시도해주세요.
+※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
+
+
+
+
+
+
+
+
+2. 로그아웃
+URL: /api/logout
+TYPE: DELETE
+응답 형식: 
+{
+	message: 처리 결과
+}
+
+에러 발생 형식: 
+{
+	error: {
+		errorCode: 에러 코드
+		name: 에러명
+		message: 에러 내용
+	}
+}
+#################################################
+응답 예제: 
+{
+	"message": "정상적으로 로그아웃이 되었습니다."
+}
+
+에러 발생시: 
+{
+	"error": {
+		"errorCode": 500, 
+		"name": "Internal Server Error", 
+		"message": "잠시 후 다시 시도해주세요."
+	}
+}
+#################################################
+참고사항※※※※※※※※※※※※※※※※※※※※※※※※※
+에러패턴
+- 로그인 없이 시도할 때 / 401: 로그인 후 이용해주세요.
+※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
+
+
+
+
+
+
+
+
+
+3. 로그인 체크
+URL: /api/loginCheck
+TYPE: GET
+응답 형식: 
+{
+	uniqueId: 사용자 고유 번호
+	connectCode: 사이트 연결 코드
+	trademark: 스마트 아이디
+}
+
+에러 발생 형식: 
+{
+	error: {
+		errorCode: 에러 코드
+		name: 에러명
+		message: 에러 내용
+	}
+}
+#################################################
+응답 예제: 
+{
+	"uniqueId": 3, 
+	"connectCode": 100, 
+	"trademark": "월드스폰"
+}
+
+에러 발생시: 
+{
+	"error": {
+		"errorCode": 500, 
+		"name": "Internal Server Error", 
+		"message": "잠시 후 다시 시도해주세요."
+	}
+}
+#################################################
+참고사항※※※※※※※※※※※※※※※※※※※※※※※※※
+에러패턴
+- 로그인 없이 시도할 때 / 401: 로그인 후 이용해주세요.
+※※※※※※※※※※※※※※※※※※※※※※※※※※※※※

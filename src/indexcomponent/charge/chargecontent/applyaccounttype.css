@@ -1,0 +1,141 @@
+.accountRows {
+    display: flex;
+    align-items: center;
+    font-size: 1.3rem;
+}
+
+.accountRows:not(:last-of-type) {
+    margin-bottom: 10px;
+}
+
+.rowTitle {
+    width: 100px;
+    color: #FFF;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.accountRows input {
+    padding: 10px;
+    color: #555;
+    border: 0;
+    border-radius: 5px;
+}
+
+.companyAccount {
+    width: 50%;
+}
+
+.depositorName {
+    width: 50%;
+}
+
+.depositorBank {
+    width: 25%;
+    margin-right: 10px;
+}
+
+.depositorAccount {
+    width: 50%;
+}
+
+.depositMoney {
+    width: 50%;
+}
+
+.moneyButton {
+    padding: 10px 30px;
+    color: #FFF;
+    font-size: 1.3rem;
+    background: linear-gradient(#4e4e70, #2e3154);
+    border: 0;
+    border-radius: 5px;
+}
+
+.moneyButton:not(:last-of-type) {
+    margin-right: 20px;
+}
+
+.applyCancelBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.applyCancelBox button {
+    width: 20%;
+    margin-top: 20px;
+    padding: 15px 0;
+    color: #FFF;
+    font-size: 1.8rem;
+    border: 0;
+    border-radius: 5px;
+}
+
+.applyButton {
+    margin-right: 10px;
+    background: linear-gradient(#08a1e9, #0566b5);
+}
+
+.cancelButton {
+    background: linear-gradient(#a6a6ab, #707175);
+}
+
+@media screen and (max-width : 1024px) {
+    .rowTitle {
+        width: 50px;
+    }
+}
+
+@media screen and (max-width : 768px) {
+    .companyAccount {
+        width: 80%;
+    }
+    
+    .depositorName {
+        width: 80%;
+    }
+    
+    .depositorBank {
+        width: 25%;
+        margin-right: 10px;
+    }
+    
+    .depositorAccount {
+        width: 53.1%;
+    }
+    
+    .depositMoney {
+        width: 80%;
+    }
+
+    .moneyButton:not(:last-of-type) {
+        margin-right: 10px;
+    }
+
+    .accountRows:last-of-type {
+        justify-content: center;
+    }
+
+    .accountRows:last-of-type .rowTitle {
+        width: 0;
+    }
+
+    .moneyButtonWrap {
+        justify-content: center;
+    }
+
+    .moneyButtonWrap .rowTitle {
+        width: 0;
+    }
+
+    .moneyButton {
+        padding: 10px 0;
+        width: 20%;
+    }
+
+    .applyCancelBox button {
+        width: 30%;
+        padding: 10px 0;
+    }
+}

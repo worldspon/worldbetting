@@ -1,0 +1,250 @@
+header {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 0 0 5px 5px;
+    background: linear-gradient(to bottom, #2d3563, #545a8e);
+}
+
+.menuBox {
+    display: flex;
+    margin-bottom: 15px;
+    padding: 10px 0;
+    justify-content: space-around;
+    font-size: 1.5rem;
+    font-weight: bolder;
+    color: white;
+    border-radius: 10px;
+    box-shadow: inset 0 0 8px 3px rgba(32, 42, 155, 0.75),
+    0 2px 2px 0px rgba(255, 255, 255, 0.2),
+    0 -2px 2px 1px rgba(0, 0, 0, 0.7);
+    background-color: #08a1e9;
+}
+
+.menuBox li {
+    cursor: pointer;
+}
+
+.infoBox {
+    display: flex;
+    justify-content: space-between;
+}
+/* USERINFO BOX START */
+.userInfo {
+    flex-shrink: 0;
+    width: 300px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 5px 3px rgba(29, 31, 50, 0.7);
+    background: linear-gradient(#4e4e70, #2d3053);
+}
+
+.userNameBox {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 2px solid #676d8f;
+}
+
+.userIcon {
+    width: 27px;
+}
+
+.userName {
+    margin-left: auto;
+    text-align: right;
+    font-size: 1.2rem;
+    line-height: 1.3;
+    font-weight: bold;
+    color: #fff;
+}
+
+.noBreakWords {
+    display: inline-block;
+}
+
+.userPointBox {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 2px solid #676d8f;
+}
+
+.pointSymbol {
+    width: 28px;
+}
+
+.userPoint {
+    margin: 0 auto;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #46adf9;
+}
+
+.commissionBox {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+}
+
+.commissionSymbol {
+    width: 28px;
+}
+
+.commission {
+    margin: 0 auto;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #46adf9;
+}
+/* USERINFO BOX END */
+
+/* GAMEINFO BOX START */
+.gameInfo {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    width: 100%;
+    margin: 0 10px;
+    padding: 0 10px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 5px 3px rgba(29, 31, 50, 0.7);
+    background: linear-gradient(to bottom, #61619c, #2d3053);
+}
+
+.gameHeadline {
+    padding-bottom: 10px;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bolder;
+    color: #e7eaff;
+    text-shadow: 0px 2px 4px #000;
+    border-bottom: 2px solid #757aa8;
+}
+
+.gameCountBox {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 10px;
+    font-size: 3.5em;
+}
+
+.gameCount {
+    font-weight: bold;
+    color: white;
+}
+
+.timerRed {
+    font-weight: bold;
+    color: #FF0000;
+}
+
+.timerBlue {
+    font-weight: bold;
+    color: #f9e06c;
+}
+
+/* GAMEINFO BOX END */
+
+.logoInfo {
+    flex-shrink: 0;
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+}
+
+.loginInfoShadow {
+    box-shadow: inset 0 0 5px 3px rgba(29, 31, 50, 0.7);
+    background: linear-gradient(#4e4e70, #2d3053);
+}
+
+.logoImg {
+    width: 100%;
+}
+
+/* 모바일 시작 */
+
+.mobileLogoBox {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    padding: 0 10px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.mobileLogoutBox {
+    float: left;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #FFF;
+    cursor: pointer;
+}
+
+.mobileLogoutIcon {
+    width: 40px;
+    margin-bottom: 5px;
+}
+
+@media screen and (max-width : 1024px) {
+    header {
+        border-radius: 0;
+        margin-bottom: 0px;
+    }
+
+    .userInfo {
+        flex-shrink: 1;
+        width: 30%;
+        min-width: 170px;
+    }
+
+    .gameInfo {
+        margin: 0 0 0 10px;
+    }
+
+    .gameHeadline {
+        font-size: 1.8rem;
+    }
+    
+    .gameCountBox {
+        font-size: 2.8em;
+    }
+}
+
+@media screen and (max-width : 400px) {
+    .mobileLogoBox {
+        padding: 0;
+    }
+
+    .mobileLogoutIcon {
+        width: 40%;
+    }
+
+    .infoBox {
+        flex-flow: column;
+    }
+
+    .userInfo {
+        width: 100%;
+    }
+    .gameInfo {
+        width: 100%;
+        margin: 10px 0 0 0;
+        padding: 20px 0;
+    }
+
+    .gameHeadline {
+        font-size: 1.8rem;
+    }
+    
+    .gameCountBox {
+        font-size: 2.8em;
+    }
+}
