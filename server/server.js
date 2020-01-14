@@ -9,11 +9,11 @@ const proxy = require('express-http-proxy');
 // http server를 socket.io server로 upgrade한다
 const {GatewaySocket} = require('./socket');
 
-app.get('/api/*', proxy('http://211.192.165.100:6060'));
-app.post('/api/*', proxy('http://211.192.165.100:6060'));
-app.patch('/api/*', proxy('http://211.192.165.100:6060'));
-app.put('/api/*', proxy('http://211.192.165.100:6060'));
-app.delete('/api/*', proxy('http://211.192.165.100:6060'));
+app.get('/api/*', proxy('http://211.192.165.100:6061'));
+app.post('/api/*', proxy('http://211.192.165.100:6061'));
+app.patch('/api/*', proxy('http://211.192.165.100:6061'));
+app.put('/api/*', proxy('http://211.192.165.100:6061'));
+app.delete('/api/*', proxy('http://211.192.165.100:6061'));
 
 
 app.get('/', (req, res) => {

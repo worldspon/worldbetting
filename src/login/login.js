@@ -38,11 +38,21 @@ class Login extends React.Component {
         this.loginButton = React.createRef();
     }
 
+    getConnectURL() {
+        const url = location.href;
+
+        if(url.includes('wbet')) {
+            return 'www.wbet2020.com';
+        } else if(url.includes('betsamples')) {
+            return 'www.betsamples.com';
+        }
+    }
+
     // TCP 소켓 연결 코드를 받아오는 통신
     async getConnectCode() {
         try {
             const sendObject = {
-                url: 'www.wlotto.net'
+                url: this.getConnectURL()
             };
             const promiseResult = await promiseModule.post('/api/connect/information', sendObject);
             const codeData = JSON.parse(promiseResult);
