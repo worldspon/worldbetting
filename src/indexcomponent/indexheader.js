@@ -28,6 +28,12 @@ export default class LobbyHeader extends React.Component {
                             <span className={styles.currentPoint}>{new Intl.NumberFormat().format(this.props.userPoint)}</span>
                         </div>
                     </div>
+                    <div className={styles.bonusInfo}>
+                        <div className={styles.pointCommissionInnerBox}>
+                            <img className={styles.bonusSymbol} src={require('../images/bonus_symbol.png')} />
+                            <span className={styles.currentBonus}>{new Intl.NumberFormat().format(this.props.userBonus)}</span>
+                        </div>
+                    </div>
                     <div className={styles.commissionInfo}>
                         <div className={styles.pointCommissionInnerBox}>
                             <img className={styles.commissionSymbol} src={require('../images/commission_symbol.png')} />

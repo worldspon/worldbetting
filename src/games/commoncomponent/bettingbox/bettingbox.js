@@ -73,6 +73,7 @@ export default class BettingBox extends React.Component {
                         bettingMoneyClear={() => this.props.bettingMoneyClear()}
                         bettingAllClear={() => this.props.bettingAllClear()}
                         gameBetting={() => this.props.gameBetting()}
+                        setPrintFlag={(printFlag) => this.props.setPrintFlag(printFlag)}
                     />
                 </div>
                 <BettingList

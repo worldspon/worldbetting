@@ -62,6 +62,9 @@ export default class Charge extends React.Component {
                         {
                             (this.props.type === 0 && this.state.activeTap === 'apply') &&
                             <ApplyAccountType
+                                uniqueId={this.props.uniqueId}
+                                companyAccount={this.props.companyAccount}
+                                requestCompanyAccount={() => this.props.requestCompanyAccount()}
                                 requestChargeExchange={(data) => this.props.requestChargeExchange(data)}
                                 destroyModal={() => this.props.destroyModal()}
                             />

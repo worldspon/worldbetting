@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './bettinglist.css';
-import searchGameType from '../../../commonfunction/searchgametype';
+import searchBettingType from '../../../commonfunction/searchbettingtype';
 import searchAllocation from '../../../commonfunction/searchallocation';
 
 export default class BettingList extends React.Component {
@@ -12,7 +12,7 @@ export default class BettingList extends React.Component {
     createBettingListJSX(data) {
         const listArray = [];
         for(const [index, obj] of Object.entries(data)) {
-            const typeObject = searchGameType(obj.bettingType, this.props.gameType);
+            const typeObject = searchBettingType(obj.bettingType, this.props.gameType);
             const allocationMoney = Math.round(searchAllocation(this.props.gameType, obj.bettingType, this.props.allocation) * obj.bettingMoney);
             listArray.push(
             <tr className={styles.bettingListRow}

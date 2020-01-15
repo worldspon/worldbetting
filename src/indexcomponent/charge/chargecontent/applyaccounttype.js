@@ -94,13 +94,18 @@ export default class ApplyTypeAccount extends React.Component {
         });
     }
 
+    componentDidMount() {
+        this.props.requestCompanyAccount();
+    }
+
+
     render() {
 
         return (
             <div>
                 <div className={styles.accountRows}>
                     <span className={styles.rowTitle}></span>
-                    <input type="text" className={styles.companyAccount} value="농협 / 12346843541381" readOnly />
+                    <input type="text" className={styles.companyAccount} value={this.props.companyAccount.length <= 0 ? '' : `${this.props.companyAccount[0]} / ${this.props.companyAccount[1]} / ${this.props.companyAccount[2]}`} readOnly />
                 </div>
                 <div className={styles.accountRows}>
                     <span className={styles.rowTitle}>예금주</span>

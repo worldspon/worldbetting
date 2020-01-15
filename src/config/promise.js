@@ -22,6 +22,17 @@ export default class promiseModule {
         })
     }
 
+    static printPost(url, sendObject) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', url);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = () => resolve(xhr.responseText);
+            xhr.onerror = () => reject(xhr.statusText);
+            xhr.send(sendObject);
+        })
+    }
+
     static delete(url) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();

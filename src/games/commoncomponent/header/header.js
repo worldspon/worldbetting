@@ -8,7 +8,8 @@ export default class Header extends React.Component {
             // 윈도우 넓이에 맞게 레이아웃을 변경하는 용도로 쓰임
             windowWidth: window.innerWidth,
             remainMinute: null,
-            remainSecond: null
+            remainSecond: null,
+            userLevel: sessionStorage.getItem('level')
         }
 
         // resize 이벤트 발생시 윈도우 넓이 최신화
@@ -22,13 +23,10 @@ export default class Header extends React.Component {
         location.href="/"
     }
 
-    componentDidMount() {
-
-    }
-
     render() {
         return (
             <header>
+                {/* 모바일 헤더 */}
                 { this.state.windowWidth <= 1024 && 
                     <div className={styles.mobileLogoBox} style={{backgroundImage: `url(${this.props.logoURL})`}}>
                         <div className={styles.mobileLogoutBox} onClick={() => this.props.tcpLogout()}>
@@ -50,16 +48,26 @@ export default class Header extends React.Component {
                 <div className={styles.infoBox}>
                     <div className={styles.userInfo}>
                         <div className={styles.userNameBox}>
-                            <img className={styles.userIcon} src={require('../../../images/user_icon.png')} />
+                            <div className={styles.levelBox}>
+                                <span className={styles.levelText}>Lv</span>
+                                <span className={styles.levelNum}>{this.state.userLevel}</span>
+                            </div>
                             <span className={styles.userName}>{this.props.trademark}님 <span className={styles.noBreakWords}>반갑습니다.</span></span>
                         </div>
                         <div className={styles.userPointBox}>
-                            <img className={styles.pointSymbol} src={require('../../../images/point_symbol.png')} />
-                            <span className={styles.userPoint}>{new Intl.NumberFormat().format(this.props.userPoint)}</span>
+                            <div>
+                                <span className={styles.symbol}>P</span>
+                                <span className={styles.userPoint}>{new Intl.NumberFormat().format(this.props.userPoint)}</span>
+                            </div>
+                            <div>
+                                <span className={styles.symbol}>B</span>
+                                <span className={styles.userPoint}>{new Intl.NumberFormat().format(this.props.userBonus)}</span>
+                            </div>
                         </div>
                         <div className={styles.commissionBox}>
-                            <img className={styles.commissionSymbol} src={require('../../../images/commission_symbol.png')} />
+                            <span className={styles.symbol}>C</span>
                             <span className={styles.commission}>{new Intl.NumberFormat().format(this.props.userCommission)}</span>
+                            <button className={styles.changeCommissionButton} onClick={() => this.props.requestChangeCommission()}>포인트전환</button>
                         </div>
                     </div>
                     <div className={styles.gameInfo}>

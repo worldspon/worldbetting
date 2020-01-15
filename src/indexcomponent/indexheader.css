@@ -32,7 +32,7 @@ header {
     background: linear-gradient(#4e4e70, #2d3053);
 }
 
-.userInfo, .pointInfo, .commissionInfo {
+.userInfo, .pointInfo, .bonusInfo, .commissionInfo {
     position: relative;
     display: flex;
     width: 100%;
@@ -84,13 +84,13 @@ header {
     background: linear-gradient(#3d3b5c, #47496f);
 }
 
-.pointSymbol, .commissionSymbol {
+.pointSymbol, .bonusSymbol, .commissionSymbol {
     position: absolute;
     top: -5px;
     width: 50px;
 }
 
-.currentPoint, .currentCommission {
+.currentPoint, .currentBonus, .currentCommission {
     color: #FFF;
     font-size: 2rem;
     margin-left: auto;

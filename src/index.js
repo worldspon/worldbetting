@@ -18,6 +18,7 @@ import GameSelectBox from './indexcomponent/gameselectbox';
 import Charge from './indexcomponent/charge/charge';
 import Exchange from './indexcomponent/exchange/exchange';
 import InfoChange from './indexcomponent/infochange/infochange';
+import requestGameState from './commonfunction/requestgamestate';
 
 
 class Index extends React.Component {
@@ -29,12 +30,14 @@ class Index extends React.Component {
             infochangeModal: false,
             userPoint: 0,
             userCommission: 0,
+            userBonus: 0,
             // 충전, 환전 타입
             chargeExchangeType: 0,
             // 회사 코인 리스트
             companyCoinList: [],
             // 코인 리스트가 분할되어 오는것을 대비해 임시 저장할 저장소
             coinByteStore: [],
+            companyAccount: [],
             // 충환전 신청 리스트
             chargeExchangeList: [],
             // 충환전 신청 리스트가 분할되어 오는것을 대비해 임시 저장할 저장소
@@ -47,7 +50,9 @@ class Index extends React.Component {
                 account: '',
                 coin: '',
                 coinWallet: ''
-            }
+            },
+            certification: {},
+            connectState: {}
         }
     }
 
@@ -65,9 +70,13 @@ class Index extends React.Component {
 
                 for(const ary of dataArray) {
                     const command = decodeUTF8(ary.slice(0, 7));
+                    console.log(command);
                     // 로그인 검증
                     if(command === '1000020') {
                         this.handleLoginCheckResult(ary.slice(7, ary.length-5));
+                    // 게임 접속상태 변경
+                    } else if(command === '1002000') {
+                        this.dummy(ary.slice(7, ary.length-5));
                     // 유저 위치 로비 변경
                     } else if(command === '1003000') {
                         this.setUserState(ary.slice(7, ary.length-5));
@@ -80,6 +89,9 @@ class Index extends React.Component {
                     // 회사 코인 리스트
                     } else if(command === '1101000') {
                         this.setCompanyCoinList(ary.slice(7, ary.length-5));
+                    // 회사 계좌 정보
+                    } else if(command === '1100200') {
+                        this.setCompanyAccount(ary.slice(7, ary.length-5));
                     // 충전 환전신청
                     } else if(command === '1100000') {
                         this.responseChargeExchangeResult(ary.slice(7, ary.length-5));
@@ -94,18 +106,51 @@ class Index extends React.Component {
 
             // force client disconnect from server
             webSocket.on('forceDisconnect', () => {
-                webSocket.disconnect();
+                webSocket.emit('disconnect');
+            });
+
+            webSocket.on('tcpForceClose', (message) => {
+                webSocket.emit('disconnect',message);
             });
         
             webSocket.on('disconnect', (message) => {
                 sessionStorage.clear();
-                alert(message);
+                alert(message);    
                 location.href='/login';
             });
 
             // 로그인 검증
             this.tcpLoginCheck();
         });
+    }
+
+    dummy(byteArray) {
+        const errorCode = parseInt(byteArray.slice(0,1));
+        console.log(errorCode);
+        if(errorCode === 0) {
+            const content = decodeUTF16(byteArray.slice(3)).split('|');
+            console.log(content);
+            this.setState({
+                certification: {
+                    powerBall: content[1],
+                    worldBall5: content[4],
+                    worldBall3: content[7],
+                    zombieDrop: content[10],
+                    zombieBreak: content[13],
+                    rsp: content[16]
+                },
+                connectState: {
+                    powerBall: content[2],
+                    worldBall5: content[5],
+                    worldBall3: content[8],
+                    zombieDrop: content[11],
+                    zombieBreak: content[14],
+                    rsp: content[17]
+                }
+            })
+        } else {
+            console.log('state failed');
+        }
     }
 
     // 접속시 TCP 서버에 로그인 인증 이벤트 emit
@@ -120,7 +165,6 @@ class Index extends React.Component {
 
     // 로그인 검증 결과 처리
     handleLoginCheckResult(byteArray) {
-        console.log('CHECK!');
         const errorCode = parseInt(byteArray.slice(0,1));
         // 로그인 인증 성공
         if( errorCode === 0 ) {
@@ -130,6 +174,7 @@ class Index extends React.Component {
             this.requestUserMoney();
             // 유저 정보 및 충환전 타입
             this.requestUserInfo();
+            requestGameState(this.state.webSocket, this.props.uniqueId);
         } else {
             // 로그인 인증 실패
             switch (errorCode) {
@@ -169,7 +214,6 @@ class Index extends React.Component {
         const sendData = command.concat(content).concat(endSignal);
         this.state.webSocket.emit('tcpsend', sendData);
         sessionStorage.clear();
-        this.state.webSocket.emit('disconnect','로그아웃처리 되었습니다.');
         location.href = '/login';
     }  
 
@@ -207,10 +251,10 @@ class Index extends React.Component {
         const errorCode = parseInt(byteArray.slice(0,1));
         if(errorCode === 0) {
             const content = decodeUTF16(byteArray.slice(3)).split('|');
-            content[content.length-1] === '' ? content.pop() : '';
             this.setState({
                 userPoint: parseInt(content[0]),
-                userCommission: parseInt(content[1])
+                userCommission: parseInt(content[1]),
+                userBonus: parseInt(content[2])
             });
         } else if(errorCode === 250 || errorCode === 255) {
             alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
@@ -251,6 +295,28 @@ class Index extends React.Component {
             });
         } else if(errorCode === 250 || errorCode === 255) {
             alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
+        }
+    }
+
+    // 회사 계좌정보를 불러오는 소켓통신
+    requestCompanyAccount() {
+        const command = encodeUTF8('1100200');
+        const content = encodeUTF16(this.props.uniqueId + `|`);
+        const endSignal = encodeUTF8('<End>');
+        const sendData = command.concat(content).concat(endSignal);
+
+        this.state.webSocket.emit('tcpsend', sendData);
+    }
+
+    // 회사 계좌정보 세팅
+    setCompanyAccount(byteArray) {
+        const errorCode = parseInt(byteArray.slice(0, 1));
+        if(errorCode === 0) {
+            this.setState({
+                companyAccount: decodeUTF16(byteArray.slice(3)).split('|')
+            });
+        } else {
+            alert('계좌 정보를 받아오지 못했습니다.');
         }
     }
 
@@ -452,6 +518,7 @@ class Index extends React.Component {
                         trademark={this.props.trademark}
                         userPoint={this.state.userPoint}
                         userCommission={this.state.userCommission}
+                        userBonus={this.state.userBonus}
                         showChargeModal={() => {this.showChargeModal()}}
                         showExchangeModal={() => {this.showExchangeModal()}}
                         showInfoChangeModal = {() => {this.showInfoChangeModal()}}
@@ -463,9 +530,11 @@ class Index extends React.Component {
                             webSocket={this.state.webSocket}
                             uniqueId={this.props.uniqueId}
                             type={this.state.chargeExchangeType}
+                            companyAccount={this.state.companyAccount}
                             companyCoinList={this.state.companyCoinList}
                             chargeExchangeList={this.state.chargeExchangeList}
                             requestCompanyCoinList={() => this.requestCompanyCoinList()}
+                            requestCompanyAccount={() => this.requestCompanyAccount()}
                             requestChargeExchange={(data) => this.requestChargeExchange(data)}
                             requestChargeExchangeList={(type) => this.requestChargeExchangeList(type)}
                             destroyModal={() => this.destroyModal()}
@@ -494,7 +563,11 @@ class Index extends React.Component {
                     }
                     {
                         !this.state.chargeModal && !this.state.exchangeModal && !this.state.infochangeModal &&
-                        <GameSelectBox />
+                        <GameSelectBox
+                            certification={this.state.certification}
+                            connectState={this.state.connectState}
+                        />
+
                     }
                 </div>
             </div>

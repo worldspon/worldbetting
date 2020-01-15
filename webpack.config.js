@@ -55,8 +55,8 @@ module.exports = {
         ]
     },
     devServer: {
-        host: '192.168.0.2',
-        port: 8080,
+        host: '192.168.0.25',
+        port: 8803,
         overlay: true,
         historyApiFallback: true,
         disableHostCheck: true,

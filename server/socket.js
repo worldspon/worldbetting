@@ -53,14 +53,12 @@ class WebSocket {
 
             // client에서 받은 파싱 데이터를 buffer에 담아 전송
             socket.on('tcpsend', (data) => {
-                console.log('TCP SEND');
                 const sendObject = Buffer.from(data);
                 this.tcp.write(sendObject);
             })
 		
 			// force client disconnect from server
 			socket.on('forceDisconnect', () => {
-                console.log('TCP FROCE');
 			    socket.disconnect();
 			});
 		
@@ -107,18 +105,16 @@ class TCPSocket {
             webSocket.emit('tcpReceive', data);
 		});
 		
-		this.TCPSocket.on('end', () => {
-            webSocket.emit('disconnect', 'TCP 연결이 종료되어 로그아웃합니다.');
+        this.TCPSocket.on('end', () => {
+            webSocket.emit('tcpForceClose', 'TCP 연결이 종료되어 로그아웃합니다.');
 		});
 		
 		this.TCPSocket.on('error', (err) => {
-            webSocket.emit('disconnect', 'TCP 연결이 종료되어 로그아웃합니다.');
-            console.log(`TCP ERROR!!!! : ${err}`);
+            webSocket.emit('tcpForceClose', 'TCP 연결이 종료되어 로그아웃합니다.');
 		});
 		
 		this.TCPSocket.on('timeout', () => {
-            console.log('TCP TIMEOUT!');
-            webSocket.emit('disconnect', 'TCP 연결이 종료되어 로그아웃합니다.');
+            webSocket.emit('tcpForceClose', 'TCP 연결이 종료되어 로그아웃합니다.');
         })
         
         return this.TCPSocket;

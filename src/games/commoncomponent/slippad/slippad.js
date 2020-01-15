@@ -96,6 +96,9 @@ export default class SlipPad extends React.Component {
                     <div className={styles.bettingNumberRow}>
                         <button className={styles.bettingButton} onClick={() => this.props.gameBetting()}>베팅하기</button>
                     </div>
+                    <div className={styles.printInput}>
+                        PRINT <input type='checkbox' value='PRINT' onChange={(e) => this.props.setPrintFlag(e.target.checked)} />
+                    </div>
                 </div>
             </div>
         )

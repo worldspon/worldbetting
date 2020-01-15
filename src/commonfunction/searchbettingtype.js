@@ -1,4 +1,4 @@
-export default function searchbettingType(bettingType, gameType) {
+export default function searchBettingType(bettingType, gameType) {
     const typeObject = {};
 
     if(gameType <= 4) {

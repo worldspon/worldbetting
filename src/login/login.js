@@ -52,7 +52,8 @@ class Login extends React.Component {
     async getConnectCode() {
         try {
             const sendObject = {
-                url: this.getConnectURL()
+                url: 'www.wbet2020.com'
+                // url: this.getConnectURL()
             };
             const promiseResult = await promiseModule.post('/api/connect/information', sendObject);
             const codeData = JSON.parse(promiseResult);
@@ -158,6 +159,7 @@ class Login extends React.Component {
             sessionStorage.setItem('uniqueId', content[0]);
             sessionStorage.setItem('userId', content[1]);
             sessionStorage.setItem('level', content[2]);
+            sessionStorage.setItem('code', this.state.connectCode);
             location.href='/';
         } else {
             this.loginButton.current.disabled = false;

@@ -22,6 +22,8 @@ import requestGameInfo from '../../commonfunction/requestgameinfo';
 import requestUserGameInfo from '../../commonfunction/requestusergameinfo';
 // 유저 포인트
 import requestUserPoint from '../../commonfunction/requestuserpoint';
+// 유저 커미션 전환
+import requestChangeCommission from '../../commonfunction/requestchangecommission';
 // 게임 회차
 import requestGameRound from '../../commonfunction/requestgameround';
 // 게임 시간
@@ -41,7 +43,8 @@ import ButtonPad from './buttonpad'
 import GameResult from '../commoncomponent/gameresult/gameresult';
 import listStyles from '../commoncomponent/gameresult/gameresult.css';
 import promiseModule from '../../config/promise';
-import Pagination from '../../commoncomponent/pagination/pagination'
+import Pagination from '../../commoncomponent/pagination/pagination';
+import { printReceipt } from '../../commonfunction/printbetting';
 
 // 내부 코드에서 표시되는 page는 배열 index로 실제 표시 page는 +1 하여 표시됨
 
@@ -54,8 +57,9 @@ class WorldLotto5M extends React.Component {
             apiURL: 'worldBall5',
             userPoint: 0,
             userCommission: 0,
+            userBonus: 0,
             gameType: 2,
-            gameTitle: 'WorldLotto',
+            gameTitle: 'WorldBall5',
             // 게임 회차
             gameRound: 0,
             // 게임 시간
@@ -85,7 +89,8 @@ class WorldLotto5M extends React.Component {
             // 게임 결과 배열
             gameResultList: [],
             // 이전회차 게임 결과
-            prevGameResult: null
+            prevGameResult: null,
+            resultPrint: false
         }
     }
 
@@ -118,6 +123,9 @@ class WorldLotto5M extends React.Component {
                     // 유저 금액 최신화
                     } else if(command === '1001000') {
                         this.setUserMoney(ary.slice(7, ary.length-5));
+                    // 유저 커미션 전환
+                    } else if(command === '1103000') {
+                        this.responseChangeCommission(ary.slice(7, ary.length-5));
                     // 게임 회차 최신화
                     } else if(command === '1161000') {
                         this.setGameRound(ary.slice(7, ary.length-5));
@@ -154,6 +162,15 @@ class WorldLotto5M extends React.Component {
             // 로그인 검증
             tcpLoginCheck(webSocket);
         });
+    }
+
+    responseChangeCommission(byteArray) {
+        const errorCode = parseInt(byteArray.slice(0,1));
+        if(errorCode === 0) {
+            requestUserPoint(this.state.webSocket, this.props.uniqueId);
+        } else {
+            alert('전환할 수수료가 없습니다.');
+        }
     }
 
     responsePrevGameResult(byteArray) {
@@ -276,7 +293,8 @@ class WorldLotto5M extends React.Component {
             content[content.length-1] === '' ? content.pop() : '';
             this.setState({
                 userPoint: parseInt(content[0]),
-                userCommission: parseInt(content[1])
+                userCommission: parseInt(content[1]),
+                userBonus: parseInt(content[2])
             });
         } else if(errorCode === 250) {
             alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
@@ -406,6 +424,7 @@ class WorldLotto5M extends React.Component {
     responseGameBetting(byteArray) {
         const errorCode = parseInt(byteArray.slice(0,1));
         if(errorCode === 0) {
+            this.state.resultPrint && printReceipt(this.state.gameRound, this.props.trademark, this.state.gameTitle, this.state.gameType, this.state.selectBettingTypeNum, this.state.bettingMoney, this.state.allocation);
             // 베팅 성공시 선택 초기화 및 유저 금액 최신화
             this.bettingAllClear();
             requestUserPoint(this.state.webSocket, this.props.uniqueId);
@@ -431,6 +450,7 @@ class WorldLotto5M extends React.Component {
         this.setState({
             bettingList: []
         });
+        requestUserPoint(this.state.webSocket, this.props.uniqueId);
         requestBettingList(this.state.webSocket, this.props.uniqueId, this.state.gameType);
     }
 
@@ -446,6 +466,12 @@ class WorldLotto5M extends React.Component {
 
         this.setState({
             currentTotalBettingMoney: updateBettingMoney
+        });
+    }
+
+    setPrintFlag(printFlag) {
+        this.setState({
+            resultPrint: printFlag
         });
     }
     
@@ -584,11 +610,13 @@ class WorldLotto5M extends React.Component {
                         trademark={this.props.trademark}
                         userPoint={this.state.userPoint}
                         userCommission={this.state.userCommission}
+                        userBonus={this.state.userBonus}
                         gameRound={this.state.gameRound}
                         gameCount={this.state.gameCount}
                         bettingAllowStart={this.state.bettingAllowStart}
                         bettingAllowEnd={this.state.bettingAllowEnd}
                         showGameResultComponent={() => this.showGameResultComponent()}
+                        requestChangeCommission={() => requestChangeCommission(this.state.webSocket, this.props.uniqueId)}
                         tcpLogout={() => tcpLogout(this.state.webSocket, this.props.uniqueId,this.props.trademark)}
                     />
                     {
@@ -611,6 +639,7 @@ class WorldLotto5M extends React.Component {
                             bettingAllClear={() => this.bettingAllClear()}
                             gameBetting={() => this.gameBetting()}
                             requestCancelBetting={(e) => requestCancelBetting(this.state.webSocket, this.props.uniqueId, this.state.gameType, this.state.gameCount, e)}
+                            setPrintFlag={(printFlag) => this.setPrintFlag(printFlag)}
                             typePad={
                                 <TypePad
                                     totalBettingLimit={this.state.totalBettingLimit}
