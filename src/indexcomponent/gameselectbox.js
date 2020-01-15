@@ -7,24 +7,36 @@ export default class GameSelectBox extends React.Component {
     }
 
     locationWorldLotto3M() {
-        location.href="/worldlotto3m";
+        if(this.props.connectState.worldBall3 == 1) {
+            location.href="/worldlotto3m";
+        }
     }
     locationWorldLotto5M() {
-        location.href="/worldlotto5m";
+        if(this.props.connectState.worldBall5 == 1) {
+            location.href="/worldlotto5m";
+        }
     }
     locationdhLottery() {
-        location.href="/dhlottery";
+        if(this.props.connectState.powerBall == 1) {
+            location.href="/dhlottery";
+        }
     }
     locationRspGame() {
-        location.href="/rspgame";
+        if(this.props.connectState.rsp == 1) {
+            location.href="/rspgame";
+        }
     }
 
     locationDropGame() {
-        location.href="/dropgame";
+        if(this.props.connectState.zombieDrop == 1) {
+            location.href="/dropgame";
+        }
     }
 
     locationBreakGame() {
-        location.href="/breakgame";
+        if(this.props.connectState.zombieBreak == 1) {
+            location.href="/breakgame";
+        }
     }
 
     render() {
