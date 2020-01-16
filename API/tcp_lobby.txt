@@ -30,9 +30,11 @@ REC :
 
 ==========정보수정==========
 커맨드 : 100020
-REQ : 유니크 + 비밀번호 + 휴대폰 + 은행명 + 예금주 + 계좌번호 + 코인명 + 지갑주소
+REQ : 유니크 + 현재비밀번호 + 변경비밀번호 + 휴대폰 + 은행명 + 예금주 + 계좌번호 + 코인명 + 지갑주소
 REC : 
 [0] 성공
+[1] 기존 비밀번호와 불일치
+[2] 비밀번호 4자 이상
 
 ==========코인리스트==========
 커맨드 : 110100
@@ -52,6 +54,23 @@ REC :
 [1] 로비에서만 신청이 가능합니다. 
 [2] 올바르지 않은 충환전금액입니다.
 [3] 환전금액이 부족합니다.
+
+==========충, 환전 리스트==========
+커맨드 : 110011
+REQ : 유니크 + 타입
+타입 [1]충전 [2]환전..
+REC : stINOUTMONEY구조체
+stINOUTMONEY
+public long nUniqueID;
+public long nUserUniqueID;
+public char[] arrayCharCreateDate = new char[25];
+public char[] arrayCharResultDate = new char[25];
+public long nPoint;
+public double fCoin;
+public byte nStay;
+public char[] arrayCharBankName = new char[20];
+public char[] arrayCharBankNumber = new char[100];
+public char[] arrayCharBankUser = new char[20];
 
 ==========충, 환전 리스트==========
 커맨드 : 110010

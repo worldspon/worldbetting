@@ -62,7 +62,7 @@ export default class ApplyAccountType extends React.Component {
             alert('올바른 금액을 입력해주세요.');
             return false;
         } else if (this.inputCheck()) {
-            const data = `|0|${this.state.userName}|${this.state.userBank}|${this.state.userAccount}|${this.state.exchangeMoney}|`;
+            const data = `|2|${this.state.userName}|${this.state.userBank}|${this.state.userAccount}|${this.state.exchangeMoney}|`;
 
             this.props.requestChargeExchange(data);
             this.resetInput();

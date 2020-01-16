@@ -6,7 +6,8 @@ import {
     decodeUTF16,
     checkTcpData,
     parseBettingList,
-    parsePrevGameResult
+    parsePrevGameResult,
+    parseBettingResult
 } from '../../config/byteparser';
 import common from '../../common.css';
 import styles from './dhlottery.css';
@@ -34,13 +35,19 @@ import requestBettingList from '../../commonfunction/requestbettinglist';
 import requestGameBetting from '../../commonfunction/requestgamebetting';
 // 베팅 취소
 import requestCancelBetting from '../../commonfunction/requestcancelbetting';
+// 과거 베팅 리스트 갯수
+import responseBettingResultCount from '../../commonfunction/responsebettingresultcount';
+// 과거 베팅 리스트
+import responseBettingResult from '../../commonfunction/responsebettingresult';
+import searchBettingType from '../../commonfunction/searchbettingtype';
 import Header from '../commoncomponent/header/header';
 import BettingBox from '../commoncomponent/bettingbox/bettingbox';
 // GameBetting Tag에 props로 보내기 위한 TypePad Tag
 import TypePad from '../commonComponent/typepad/typepad';
 // 공통 Component TypePad에 각 게임마다 다른 button component를 전달하기 위한 Tag
-import ButtonPad from './buttonpad'
+import ButtonPad from './buttonpad';
 import GameResult from '../commoncomponent/gameresult/gameresult';
+import BettingResult from '../commoncomponent/bettingresult/bettingresult';
 import listStyles from '../commoncomponent/gameresult/gameresult.css';
 import promiseModule from '../../config/promise';
 import Pagination from '../../commoncomponent/pagination/pagination';
@@ -68,6 +75,7 @@ class DHLottry extends React.Component {
             gameCountInterval: null,
             // 게임 결과 컴포넌트 표시 여부 boolean
             gameResultComponent: false,
+            bettingResultComponent: false,
             // 게임 결과테이블 결과부분 텍스트
             gameResultThText: ['일반볼', '파워볼'],
             bettingAllowStart: 0,
@@ -88,6 +96,8 @@ class DHLottry extends React.Component {
             resultEndPage: 0,
             // 게임 결과 배열
             gameResultList: [],
+            bettingResultList: [],
+            bettingListStore: [],
             // 이전회차 게임 결과
             prevGameResult: null,
             resultPrint: false
@@ -144,6 +154,11 @@ class DHLottry extends React.Component {
                     // 이전회차 게임 결과
                     } else if(command === '1181000') {
                         this.responsePrevGameResult(ary.slice(7, ary.length-5));
+                    // 게임 과거 베팅내역
+                    } else if(command === '1173010') {
+                        this.setBettingResultCount(ary.slice(7, ary.length-5));
+                    } else if(command === '1173000') {
+                        this.setBettingResult(ary.slice(7, ary.length-5));
                     }
                 }
             });
@@ -162,6 +177,32 @@ class DHLottry extends React.Component {
             // 로그인 검증
             tcpLoginCheck(webSocket);
         });
+    }
+
+    setBettingResultCount(byteArray) {
+        const content = decodeUTF16(byteArray.slice(3)).split('|');
+        this.setState({
+            resultEndPage: Math.ceil(content[0]/10) - 1
+        });
+    }
+
+    setBettingResult(byteArray) {
+
+        const errorCode = parseInt(byteArray.slice(0, 1));
+        const bettingListStore = [...this.state.bettingListStore];
+        bettingListStore.push(...byteArray.slice(3));
+
+        if(errorCode !== 2) {
+            this.setState({
+                bettingListStore: bettingListStore
+            });
+        } else {
+            const reciveList = parseBettingResult(bettingListStore);
+            this.createBettingResultListJSX(reciveList);
+            this.setState({
+                bettingListStore: []
+            });
+        }
     }
 
     responseChangeCommission(byteArray) {
@@ -478,7 +519,16 @@ class DHLottry extends React.Component {
     // Header에서 event를 받아 GameResult, Pagination 컴포넌트 호출
     showGameResultComponent() {
         this.setState({
+            bettingResultComponent: false,
             gameResultComponent: true
+        });
+    }
+
+    // Header에서 event를 받아 GameResult, Pagination 컴포넌트 호출
+    showBettingResultComponent() {
+        this.setState({
+            gameResultComponent: false,
+            bettingResultComponent: true
         });
     }
 
@@ -489,11 +539,19 @@ class DHLottry extends React.Component {
         });
     }
 
+    // GameResult에서 event를 받아 GameResult, Pagination 컴포넌트 제거
+    destroyBettingResultComponent() {
+        this.setState({
+            bettingResultComponent: false
+        });
+    }
+
     //  GameResult 컴포넌트 제거시 관련 state 초기화
     resetPageState() {
         this.setState({
             resultCurrentPage: 0,
-            gameResultList: []
+            gameResultList: [],
+            resultEndPage: 0
         });
     }
 
@@ -502,7 +560,11 @@ class DHLottry extends React.Component {
         this.setState({
             resultCurrentPage: pageNum
         }, () => {
-            this.getGameResult();
+            if(this.state.gameResultComponent){
+                this.getGameResult();
+            } else if(this.state.bettingResultComponent) {
+                responseBettingResult(this.state.webSocket, this.props.uniqueId, this.state.gameType, this.state.resultCurrentPage+1);
+            }
         });
     }
 
@@ -510,7 +572,11 @@ class DHLottry extends React.Component {
         this.setState({
             resultCurrentPage: 0
         }, () => {
-            this.getGameResult();
+            if(this.state.gameResultComponent){
+                this.getGameResult();
+            } else if(this.state.bettingResultComponent) {
+                responseBettingResult(this.state.webSocket, this.props.uniqueId, this.state.gameType, this.state.resultCurrentPage+1);
+            }
         })
     }
 
@@ -518,7 +584,11 @@ class DHLottry extends React.Component {
         this.setState({
             resultCurrentPage: this.state.resultCurrentPage - 5 >= 0 ? this.state.resultCurrentPage-5 : 0
         }, () => {
-            this.getGameResult();
+            if(this.state.gameResultComponent){
+                this.getGameResult();
+            } else if(this.state.bettingResultComponent) {
+                responseBettingResult(this.state.webSocket, this.props.uniqueId, this.state.gameType, this.state.resultCurrentPage+1);
+            }
         });
     }
 
@@ -526,7 +596,11 @@ class DHLottry extends React.Component {
         this.setState({
             resultCurrentPage: this.state.resultCurrentPage + 5 < this.state.resultEndPage ? this.state.resultCurrentPage + 5 : this.state.resultEndPage
         }, () => {
-            this.getGameResult();
+            if(this.state.gameResultComponent){
+                this.getGameResult();
+            } else if(this.state.bettingResultComponent) {
+                responseBettingResult(this.state.webSocket, this.props.uniqueId, this.state.gameType, this.state.resultCurrentPage+1);
+            }
         });
     }
 
@@ -534,7 +608,11 @@ class DHLottry extends React.Component {
         this.setState({
             resultCurrentPage: this.state.resultEndPage
         }, () => {
-            this.getGameResult();
+            if(this.state.gameResultComponent){
+                this.getGameResult();
+            } else if(this.state.bettingResultComponent) {
+                responseBettingResult(this.state.webSocket, this.props.uniqueId, this.state.gameType, this.state.resultCurrentPage+1);
+            }
         })
     }
     // ---------페이지 이동 함수-------------
@@ -591,6 +669,27 @@ class DHLottry extends React.Component {
         });
     }
 
+    // 게임 결과 JSX 생성 및 state 저장, endpage 계산 후 저장
+    // 저장된 값은 gameResult 템플릿으로 전달 됨
+    createBettingResultListJSX(data) {
+        const listArray = [];
+        for(const [index, value] of data.entries()) {
+            const typeObject = searchBettingType(value.bettingType, this.state.gameType);
+            listArray.push((<tr className={listStyles.fakeRow} key={index + 100}></tr>));
+            listArray.push(<tr className={listStyles.gameResultListRow + ' ' + (index % 2 === 0 ? listStyles.listOddType : listStyles.listEvenType)} key={index}>
+                <td>{value.round}</td>
+                <td>{value.date}</td>
+                <td>({typeObject.headType}){typeObject.bettingType}</td>
+                <td>{value.bettingMoney}</td>
+                <td>{value.result}</td>
+            </tr>);
+        }
+
+        this.setState({
+            bettingResultList: listArray,
+        });
+    }
+
     resetPrevGameResult() {
         this.setState({
             prevGameResult: null
@@ -616,12 +715,13 @@ class DHLottry extends React.Component {
                         bettingAllowStart={this.state.bettingAllowStart}
                         bettingAllowEnd={this.state.bettingAllowEnd}
                         showGameResultComponent={() => this.showGameResultComponent()}
+                        showBettingResultComponent={() => this.showBettingResultComponent()}
                         requestChangeCommission={() => requestChangeCommission(this.state.webSocket, this.props.uniqueId)}
                         tcpLogout={() => tcpLogout(this.state.webSocket, this.props.uniqueId,this.props.trademark)}
                     />
                     {
                         // 게임 베팅부분
-                        !this.state.gameResultComponent &&
+                        !this.state.gameResultComponent && !this.state.bettingResultComponent &&
                         <BettingBox
                             gameType={this.state.gameType}
                             allocation={this.state.allocation}
@@ -656,7 +756,30 @@ class DHLottry extends React.Component {
                             }
                         />
                     }
-                    {/* 배팅내역 조회 부분 추가 예정 */}
+                    {
+                        // 베팅 결과 조회 부분
+                        this.state.bettingResultComponent &&
+                        <div className={styles.contentWrap}>
+                            <BettingResult
+                                gameTitle={this.state.gameTitle}
+                                gameType={this.state.gameType}
+                                bettingResultList={this.state.bettingResultList}
+                                responseBettingResultCount={() => responseBettingResultCount(this.state.webSocket, this.props.uniqueId, this.state.gameType)}
+                                responseBettingResult={() => responseBettingResult(this.state.webSocket, this.props.uniqueId, this.state.gameType, this.state.resultCurrentPage+1)}
+                                destroyBettingResultComponent={() => {this.destroyBettingResultComponent()}}
+                                resetPageState={() => this.resetPageState()}
+                            />
+                            <Pagination
+                                currentPage={this.state.resultCurrentPage}
+                                endPage={this.state.resultEndPage}
+                                movePage={(pageNum) => this.movePage(pageNum)}
+                                moveFirstPage={() => this.moveFirstPage()}
+                                movePrevPhrase={() => this.movePrevPhrase()}
+                                moveNextPhrase={() => this.moveNextPhrase()}
+                                moveEndPage={() => this.moveEndPage()}
+                            />
+                        </div>
+                    }
                     {
                         // 게임 결과 조회 부분
                         this.state.gameResultComponent &&

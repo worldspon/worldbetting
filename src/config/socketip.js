@@ -11,8 +11,8 @@ function getConnectURL() {
     }
 }
 
-const webSocketIp = `ws://${getConnectURL()}:8803/`;
-// const webSocketIp = 'ws://192.168.0.25:8803/';
+// const webSocketIp = `ws://${getConnectURL()}:8803/`;
+const webSocketIp = 'ws://192.168.0.25:8803/';
 
 export default function createWebSocket() {
     const webSocket = io(`${webSocketIp}${getUUIDFromCookie()}`);

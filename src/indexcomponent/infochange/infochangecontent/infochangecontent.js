@@ -75,16 +75,24 @@ export default class InfoChangeContent extends React.Component {
 
     changeUserInfo() {
         if(this.inputCheck()) {
-            const data = `|${this.state.changePassword}|${this.state.userTel}|${this.state.userBank}|${this.state.userName}|${this.state.userAccount}|${this.state.userCoin}|${this.state.userCoinWallet}|`;
+            const data = `|${this.state.currentPassword}|${this.state.changePassword}|${this.state.userTel}|${this.state.userBank}|${this.state.userName}|${this.state.userAccount}|${this.state.userCoin}|${this.state.userCoinWallet}|`;
             this.props.requestChangeUserInfo(data);
-        } else {
-            alert('변경할 비밀번호를 다시 확인해주세요.');
         }
 
     }
 
     inputCheck() {
-        if(this.state.changePassword === this.state.changePasswordCheck) return true; else return false;
+        console.log('input');
+        if(this.state.changePassword !== this.state.changePasswordCheck) {
+            alert('변경할 비밀번호를 확인해주세요.');
+            return false;
+        }else if(this.state.currentPassword === '' || this.state.currentPassword.length < 4) {
+            alert('현재 비밀번호를 확인해주세요');
+            return false;
+        }else if(this.state.changePassword.length < 4 || this.state.changePasswordCheck.length < 4) {
+            alert('비밀번호는 4글 자 이상 입력해주세요.');
+            return false;
+        }else return true;
     }
 
     componentDidMount() {
@@ -103,6 +111,7 @@ export default class InfoChangeContent extends React.Component {
                             className={styles.currentPw}
                             value={this.state.currentPassword}
                             placeholder="현재 비밀번호"
+                            maxLength='10'
                             onChange={(e) => this.setUserCurrentPw(e)}
                         />
                     </div>
@@ -113,6 +122,7 @@ export default class InfoChangeContent extends React.Component {
                             className={styles.changePw}
                             value={this.state.changePassword}
                             placeholder="변경할 비밀번호"
+                            maxLength='10'
                             onChange={(e) => this.setUserChangePw(e)}
                         />
                     </div>
@@ -123,6 +133,7 @@ export default class InfoChangeContent extends React.Component {
                             className={styles.checkPw}
                             value={this.state.changePasswordCheck}
                             placeholder="비밀번호 확인"
+                            maxLength='10'
                             onChange={(e) => this.setUserChangePwCheck(e)}
                         />
                     </div>

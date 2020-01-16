@@ -1,0 +1,100 @@
+.gameResultTitleBox {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 10px;
+    color: #c0c1e9;
+}
+
+.gameResultTitle {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.cancelButton {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 20px;
+    cursor: pointer;
+}
+
+.gameResultListTable {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: separate;
+    text-align: center;
+}
+
+.gameResultTableHeader th {
+    padding: 10px 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #0dadb3;
+    background-color: #09090f;
+    vertical-align: middle;
+}
+
+.gameCountTh {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-left: 1px solid #4a4b52;
+    border-top: 1px solid #4a4b52;
+    border-bottom: 1px solid #4a4b52;
+    border-right: 1px solid #4a4b52;
+}
+
+.resultHeaderTh {
+    border-top-right-radius: 3px;
+    border-right: 1px solid #4a4b52;
+    border-top: 1px solid #4a4b52;
+    border-bottom:1px solid #4a4b52;
+}
+
+.resultFirstTh {
+    border-bottom: 1px solid #4a4b52;
+    border-right: 1px solid #4a4b52;
+}
+
+.resultLastTh {
+    border-bottom-right-radius: 3px;
+    border-right: 1px solid #4a4b52;
+    border-bottom: 1px solid #4a4b52;
+}
+
+.fakeRow {
+    height: 5px;
+    background-color: transparent;
+}
+
+.listOddType {
+    background-color: #1f2b39;
+}
+
+.listEvenType {
+    background-color: #333333;
+}
+
+.gameResultListRow > td {
+    padding: 10px 0;
+    font-size: 1.2rem;
+    color: #FFF;
+    border-top: 1px solid #4a4b52;
+    border-bottom: 1px solid #4a4b52;
+}
+.gameResultListRow > td:first-of-type {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-left: 1px solid #4a4b52;
+}
+
+.gameResultListRow > td:last-of-type {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-right: 1px solid #4a4b52;
+}
+
+.innerTable {
+    width: 100%;
+    table-layout: fixed;
+}

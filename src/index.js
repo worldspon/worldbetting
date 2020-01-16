@@ -38,6 +38,8 @@ class Index extends React.Component {
             // 코인 리스트가 분할되어 오는것을 대비해 임시 저장할 저장소
             coinByteStore: [],
             companyAccount: [],
+            // 충환전 리스트 갯수
+            chargeExchangeListEndPage: 0,
             // 충환전 신청 리스트
             chargeExchangeList: [],
             // 충환전 신청 리스트가 분할되어 오는것을 대비해 임시 저장할 저장소
@@ -51,7 +53,9 @@ class Index extends React.Component {
                 coin: '',
                 coinWallet: ''
             },
+            // 게임 인증 정보
             certification: {},
+            // 게임 접속 가능 정보
             connectState: {}
         }
     }
@@ -70,20 +74,19 @@ class Index extends React.Component {
 
                 for(const ary of dataArray) {
                     const command = decodeUTF8(ary.slice(0, 7));
-                    console.log(command);
                     // 로그인 검증
                     if(command === '1000020') {
                         this.handleLoginCheckResult(ary.slice(7, ary.length-5));
-                    // 게임 접속상태 변경
+                    // 게임 접속 가능상태 변경
                     } else if(command === '1002000') {
-                        this.dummy(ary.slice(7, ary.length-5));
+                        this.setGameState(ary.slice(7, ary.length-5));
                     // 유저 위치 로비 변경
                     } else if(command === '1003000') {
                         this.setUserState(ary.slice(7, ary.length-5));
                     // 유저 포인트
                     } else if(command === '1001000') {
                         this.setUserMoney(ary.slice(7, ary.length-5));
-                    // 유저 정보 수정
+                    // 유저 정보 저장
                     } else if(command === '1000100') {
                         this.setUserInfo(ary.slice(7, ary.length-5));
                     // 회사 코인 리스트
@@ -95,9 +98,13 @@ class Index extends React.Component {
                     // 충전 환전신청
                     } else if(command === '1100000') {
                         this.responseChargeExchangeResult(ary.slice(7, ary.length-5));
+                        // 충환전 리스트 갯수 호출
+                    } else if(command === '1100110') {
+                        this.responseChargeExchangeListCount(ary.slice(7, ary.length-5));
                     // 충전 환전 리스트
                     } else if(command === '1100100') {
                         this.responseChargeExchangeList(ary.slice(7, ary.length-5));
+                    // 정보 수정
                     } else if(command === '1000200') {
                         this.responseChangeUserInfo(ary.slice(7, 8));
                     }
@@ -124,35 +131,6 @@ class Index extends React.Component {
         });
     }
 
-    dummy(byteArray) {
-        const errorCode = parseInt(byteArray.slice(0,1));
-        console.log(errorCode);
-        if(errorCode === 0) {
-            const content = decodeUTF16(byteArray.slice(3)).split('|');
-            console.log(content);
-            this.setState({
-                certification: {
-                    powerBall: content[1],
-                    worldBall5: content[4],
-                    worldBall3: content[7],
-                    zombieDrop: content[10],
-                    zombieBreak: content[13],
-                    rsp: content[16]
-                },
-                connectState: {
-                    powerBall: content[2],
-                    worldBall5: content[5],
-                    worldBall3: content[8],
-                    zombieDrop: content[11],
-                    zombieBreak: content[14],
-                    rsp: content[17]
-                }
-            })
-        } else {
-            console.log('state failed');
-        }
-    }
-
     // 접속시 TCP 서버에 로그인 인증 이벤트 emit
     tcpLoginCheck() {
         const command = encodeUTF8('1000020');
@@ -175,6 +153,7 @@ class Index extends React.Component {
             // 유저 정보 및 충환전 타입
             this.requestUserInfo();
             requestGameState(this.state.webSocket, this.props.uniqueId);
+            this.requestChargeExchangeListCount(1);
         } else {
             // 로그인 인증 실패
             switch (errorCode) {
@@ -203,6 +182,34 @@ class Index extends React.Component {
                     location.href = '/login';
                     break;
             }
+        }
+    }
+
+    // 게임 접속 가능 상태 설정
+    setGameState(byteArray) {
+        const errorCode = parseInt(byteArray.slice(0,1));
+        if(errorCode === 0) {
+            const content = decodeUTF16(byteArray.slice(3)).split('|');
+            this.setState({
+                certification: {
+                    powerBall: content[1],
+                    worldBall5: content[4],
+                    worldBall3: content[7],
+                    zombieDrop: content[10],
+                    zombieBreak: content[13],
+                    rsp: content[16]
+                },
+                connectState: {
+                    powerBall: content[2],
+                    worldBall5: content[5],
+                    worldBall3: content[8],
+                    zombieDrop: content[11],
+                    zombieBreak: content[14],
+                    rsp: content[17]
+                }
+            })
+        } else {
+            console.log('state failed');
         }
     }
 
@@ -400,6 +407,23 @@ class Index extends React.Component {
         }
     }
 
+    // 충환전 리스트 총 갯수를 받아옴
+    requestChargeExchangeListCount(type) {
+        const command = encodeUTF8('1100110');
+        const content = encodeUTF16(`${this.props.uniqueId}|${type}|`);
+        const endSignal = encodeUTF8('<End>');
+        const sendData = command.concat(content).concat(endSignal);
+        this.state.webSocket.emit('tcpsend', sendData);
+    }
+
+    responseChargeExchangeListCount(byteArray) {
+        const content = decodeUTF16(byteArray.slice(3)).split('|');
+        this.setState({
+            chargeExchangeListEndPage: Math.ceil(parseInt(content[0])/10) - 1
+        })
+
+    }
+
     // 충전, 환전 리스트 받아오는 통신
     requestChargeExchangeList(type, page) {
         // 충환전 리스트 초기화
@@ -409,7 +433,7 @@ class Index extends React.Component {
            chargeExchangeListByteStore: []
         });
         const command = encodeUTF8('1100100');
-        const content = encodeUTF16(`${this.props.uniqueId}|${type}|`);
+        const content = encodeUTF16(`${this.props.uniqueId}|${type}|${page}|`);
         const endSignal = encodeUTF8('<End>');
         const sendData = command.concat(content).concat(endSignal);
 
@@ -417,6 +441,7 @@ class Index extends React.Component {
     }
 
     responseChargeExchangeList(byteArray) {
+        console.log(byteArray);
         const errorCode = parseInt(byteArray.slice(0, 1));
         const chargeExchangeListByteStore = [...this.state.chargeExchangeListByteStore];
         chargeExchangeListByteStore.push(...byteArray.slice(3));
@@ -464,8 +489,12 @@ class Index extends React.Component {
             alert('정보수정이 완료되었습니다.');
             this.destroyModal();
             this.requestUserInfo();
+        } else if(errorCode === 1) {
+            alert('비밀번호가 다릅니다.');
+        } else if(errorCode === 2) {
+            alert('비밀번호는 4글자 이상입니다.');
         } else {
-            alert('알수없는 오류입니다.')
+            alert('알수없는 오류입니다.');
         }
     }
 
@@ -536,7 +565,9 @@ class Index extends React.Component {
                             requestCompanyCoinList={() => this.requestCompanyCoinList()}
                             requestCompanyAccount={() => this.requestCompanyAccount()}
                             requestChargeExchange={(data) => this.requestChargeExchange(data)}
-                            requestChargeExchangeList={(type) => this.requestChargeExchangeList(type)}
+                            requestChargeExchangeListCount={(type) => this.requestChargeExchangeListCount(type)}
+                            requestChargeExchangeList={(type, page) => this.requestChargeExchangeList(type, page)}
+                            chargeExchangeListEndPage={this.state.chargeExchangeListEndPage}
                             destroyModal={() => this.destroyModal()}
                         />
                     }
@@ -547,8 +578,11 @@ class Index extends React.Component {
                             uniqueId={this.props.uniqueId}
                             type={this.state.chargeExchangeType}
                             userPoint={this.state.userPoint}
+                            chargeExchangeList={this.state.chargeExchangeList}
                             requestChargeExchange={(data) => this.requestChargeExchange(data)}
-                            requestChargeExchangeList={(type) => this.requestChargeExchangeList(type)}
+                            requestChargeExchangeListCount={(type) => this.requestChargeExchangeListCount(type)}
+                            requestChargeExchangeList={(type, page) => this.requestChargeExchangeList(type, page)}
+                            chargeExchangeListEndPage={this.state.chargeExchangeListEndPage}
                             destroyModal={() => this.destroyModal()}
                         />
                     }

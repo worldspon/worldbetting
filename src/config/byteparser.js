@@ -182,6 +182,32 @@ function parsePrevGameResult(byteArray, gameType) {
     }
 }
 
+function parseBettingResult(byteArray) {
+    // 유저유니크 : long[8], 게임타입 : byte[1]
+    // 날짜 : char[25]
+    // 회차 : long[8], 베팅타입 : byte[1]
+    // 베팅금액 : long[8], 결과금액 : long[8], 결과 : byte[1]
+    // char는 UTF16 형식으로 오기 때문에 X2
+    // 1 Object Size = 85 byte
+
+    const objectSize = 85;
+    const listArray = [];
+    const regEx = /\u0000/gi;
+    for(let i = 0; i < byteArray.length / objectSize; i++) {
+        listArray.push({
+            unique: byteToIntNum(byteArray.slice(i*objectSize, i*objectSize+8)),
+            gameType: parseInt(byteArray.slice(i*objectSize+8, i*objectSize+9)),
+            date: decodeUTF16(byteArray.slice(i*objectSize+9, i*objectSize+59)).replace(regEx, ''),
+            round: byteToIntNum(byteArray.slice(i*objectSize+59, i*objectSize+67)),
+            bettingType: parseInt(byteArray.slice(i*objectSize+67, i*objectSize+68)),
+            bettingMoney: byteToIntNum(byteArray.slice(i*objectSize+68, i*objectSize+76)),
+            resultMoney: byteToIntNum(byteArray.slice(i*objectSize+76, i*objectSize+84)),
+            result: parseInt(byteArray.slice(i*objectSize+84, i*objectSize+85))
+        })
+    }
+    return listArray;
+}
+
 export {
     encodeUTF8,
     encodeUTF16,
@@ -191,5 +217,6 @@ export {
     parseCompanyCoinStruct,
     parseChargeExchangeList,
     parseBettingList,
-    parsePrevGameResult
+    parsePrevGameResult,
+    parseBettingResult
 }

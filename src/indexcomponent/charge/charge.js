@@ -72,9 +72,11 @@ export default class Charge extends React.Component {
                         {
                             this.state.activeTap === 'list' &&
                             <ListType
+                                chargeExchangeListEndPage={this.props.chargeExchangeListEndPage}
                                 chargeExchangeList={this.props.chargeExchangeList}
-                                requestChargeExchangeList={(type) =>
-                                this.props.requestChargeExchangeList(type)}
+                                requestChargeExchangeListCount={(type) => this.props.requestChargeExchangeListCount(type)}
+                                requestChargeExchangeList={(type, page) =>
+                                this.props.requestChargeExchangeList(type, page)}
                             />
                         }
                     </div>

@@ -5,7 +5,6 @@ import {
 
 // 게임회차를 불러오는 함수
 export default function requestGameState(webSocket, uniqueId) {
-    console.log(`${sessionStorage.getItem('code')}|${uniqueId}|`);
     const command = encodeUTF8('1002000');
     const content = encodeUTF16(`${uniqueId}|`);
     const endSignal = encodeUTF8('<End>');

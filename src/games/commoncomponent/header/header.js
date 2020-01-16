@@ -38,7 +38,7 @@ export default class Header extends React.Component {
                 <nav>
                     <ul className={styles.menuBox}>
                         <li onClick={() => this.locationLobby()}>로비</li>
-                        <li>베팅내역</li>
+                        <li onClick={() => this.props.showBettingResultComponent()}>베팅내역</li>
                         <li onClick={() => this.props.showGameResultComponent()}>게임결과</li>
                         {this.state.windowWidth > 1024 &&
                             <li onClick={() => this.props.tcpLogout()}>로그아웃</li>

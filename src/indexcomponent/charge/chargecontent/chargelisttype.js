@@ -17,7 +17,8 @@ export default class ListType extends React.Component {
         this.setState({
             chargeListCurrentPage: pageNum
         }, () => {
-            // 리스트 비동기 or 소켓 emit 함수 호출
+            this.props.requestChargeExchangeListCount(1);
+            this.props.requestChargeExchangeList(1, this.state.chargeListCurrentPage + 1);
         });
     }
 
@@ -25,7 +26,8 @@ export default class ListType extends React.Component {
         this.setState({
             chargeListCurrentPage: 0
         }, () => {
-            // 리스트 비동기 or 소켓 emit 함수 호출
+            this.props.requestChargeExchangeListCount(1);
+            this.props.requestChargeExchangeList(1, this.state.chargeListCurrentPage + 1);
         })
     }
 
@@ -33,23 +35,26 @@ export default class ListType extends React.Component {
         this.setState({
             chargeListCurrentPage: this.state.chargeListCurrentPage - 5 >= 0 ? this.state.chargeListCurrentPage-5 : 0
         }, () => {
-            // 리스트 비동기 or 소켓 emit 함수 호출
+            this.props.requestChargeExchangeListCount(1);
+            this.props.requestChargeExchangeList(1, this.state.chargeListCurrentPage + 1);
         });
     }
 
     moveNextPhrase() {
         this.setState({
-            chargeListCurrentPage: this.state.chargeListCurrentPage + 5 < this.state.chargeListEndPage ? this.state.chargeListCurrentPage + 5 : this.state.chargeListEndPage
+            chargeListCurrentPage: this.state.chargeListCurrentPage + 5 < this.props.chargeExchangeListEndPage ? this.state.chargeListCurrentPage + 5 : this.props.chargeExchangeListEndPage
         }, () => {
-            // 리스트 비동기 or 소켓 emit 함수 호출
+            this.props.requestChargeExchangeListCount(1);
+            this.props.requestChargeExchangeList(1, this.state.chargeListCurrentPage + 1);
         });
     }
 
     moveEndPage() {
         this.setState({
-            chargeListCurrentPage: this.state.chargeListEndPage
+            chargeListCurrentPage: this.props.chargeExchangeListEndPage
         }, () => {
-            // 리스트 비동기 or 소켓 emit 함수 호출
+            this.props.requestChargeExchangeListCount(1);
+            this.props.requestChargeExchangeList(1, this.state.chargeListCurrentPage + 1);
         })
     }
     // ---------페이지 이동 함수-------------
@@ -88,6 +93,7 @@ export default class ListType extends React.Component {
     }
 
     componentDidMount() {
+        this.props.requestChargeExchangeListCount(1);
         this.props.requestChargeExchangeList(1, this.state.chargeListCurrentPage + 1);
     }
 
@@ -116,7 +122,7 @@ export default class ListType extends React.Component {
                 </table>
                 <Pagination
                     currentPage={this.state.chargeListCurrentPage}
-                    endPage={this.state.chargeListEndPage}
+                    endPage={this.props.chargeExchangeListEndPage}
                     movePage={(pageNum) => this.movePage(pageNum)}
                     moveFirstPage={() => this.moveFirstPage()}
                     movePrevPhrase={() => this.movePrevPhrase()}
