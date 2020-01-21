@@ -23,6 +23,14 @@ app.get('/', (req, res) => {
 
 app.use(express.static('../build'));
 
+app.get('/guide', (req, res) => {
+	res.sendFile(path.join(__dirname, '../build/guide/guide.html'));
+});
+
+app.get('/guide/*', (req, res) => {
+	res.redirect('/guide');
+});
+
 app.get('/login', (req, res) => {
 	res.append('Set-Cookie', `worldLottoUUID=${createSocket()}; Path=/;`);
 	res.sendFile(path.join(__dirname, '../build/login/login.html'));

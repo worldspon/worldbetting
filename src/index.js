@@ -84,7 +84,7 @@ class Index extends React.Component {
                     } else if(command === '1003000') {
                         this.setUserState(ary.slice(7, ary.length-5));
                     // 유저 포인트
-                    } else if(command === '1001000') {
+                    } else if(command === '1001000' || command === '1001500') {
                         this.setUserMoney(ary.slice(7, ary.length-5));
                     // 유저 정보 저장
                     } else if(command === '1000100') {
@@ -98,7 +98,7 @@ class Index extends React.Component {
                     // 충전 환전신청
                     } else if(command === '1100000') {
                         this.responseChargeExchangeResult(ary.slice(7, ary.length-5));
-                        // 충환전 리스트 갯수 호출
+                    // 충환전 리스트 갯수 호출
                     } else if(command === '1100110') {
                         this.responseChargeExchangeListCount(ary.slice(7, ary.length-5));
                     // 충전 환전 리스트
@@ -107,6 +107,14 @@ class Index extends React.Component {
                     // 정보 수정
                     } else if(command === '1000200') {
                         this.responseChangeUserInfo(ary.slice(7, 8));
+                    } else if(command === '9000000') {
+                        this.responseChangeExchangeAction(ary.slice(7, ary.length-5));
+                    } else if(command === '9000100') {
+                        alert('시스템 환경이 변경되어 로그인 화면으로 이동합니다.');
+                        this.tryLogout();
+                    // 관리자에게 금액 받음
+                    } else if(command === '9000400') {
+                        this.responseReceiveMoney(ary.slice(7, ary.length-5))
                     }
                 }
             });
@@ -129,6 +137,23 @@ class Index extends React.Component {
             // 로그인 검증
             this.tcpLoginCheck();
         });
+    }
+
+    responseReceiveMoney(byteArray) {
+        const content = decodeUTF16(byteArray.slice(3)).split('|');
+        alert(`관리자로부터 보유머니를 충전받았습니다.\n${content[0]}`);
+    }
+
+    // 충환전 처리통보
+    responseChangeExchangeAction(byteArray) {
+        const content = decodeUTF16(byteArray.slice(3)).split('|');
+        console.log(content);
+        if(content[1] == 1) {
+            alert(`충전되었습니다 : ${content[0]}`);
+        } else {
+            alert(`환전신청이 취소되었습니다.`);
+        }
+        this.requestUserMoney();
     }
 
     // 접속시 TCP 서버에 로그인 인증 이벤트 emit
@@ -420,7 +445,7 @@ class Index extends React.Component {
         const content = decodeUTF16(byteArray.slice(3)).split('|');
         this.setState({
             chargeExchangeListEndPage: Math.ceil(parseInt(content[0])/10) - 1
-        })
+        });
 
     }
 

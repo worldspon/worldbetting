@@ -81,6 +81,7 @@
     color: #FFF;
     border-top: 1px solid #4a4b52;
     border-bottom: 1px solid #4a4b52;
+    vertical-align: middle;
 }
 .gameResultListRow > td:first-of-type {
     border-top-left-radius: 3px;

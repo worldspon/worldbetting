@@ -116,6 +116,21 @@
     margin-right: 10px;
 }
 
+.downloadBox {
+    display: flex;
+    justify-content: space-around;
+    width: 90%;
+    margin-top: 20px;
+    max-width: 550px;
+}
+
+.downloadSpan {
+    margin-left: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #e7e6e6;
+}
+
 .modalWrap {
     position: absolute;
     top: 0;
@@ -168,4 +183,11 @@
 .modalLogo {
     display: inline-block;
     width: 100px;
+}
+
+@media screen and (max-width : 1024px) {
+
+    .pcDownloadBox, .printDownloadBox {
+        display: none;
+    }
 }

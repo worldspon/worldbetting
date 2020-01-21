@@ -23,6 +23,8 @@ import requestGameInfo from '../../commonfunction/requestgameinfo';
 import requestUserGameInfo from '../../commonfunction/requestusergameinfo';
 // 유저 포인트
 import requestUserPoint from '../../commonfunction/requestuserpoint';
+// 유저 포인트(DB)
+import requestUserPointDB from '../../commonfunction/requestuserpointdb';
 // 유저 커미션 전환
 import requestChangeCommission from '../../commonfunction/requestchangecommission';
 // 게임 회차
@@ -131,7 +133,7 @@ class WorldLotto3M extends React.Component {
                     } else if(command === '1015000'){
                         this.setUserGameInfo(ary.slice(7, ary.length-5));
                     // 유저 금액 최신화
-                    } else if(command === '1001000') {
+                    } else if(command === '1001000' || command === '1001500') {
                         this.setUserMoney(ary.slice(7, ary.length-5));
                     // 유저 커미션 전환
                     } else if(command === '1103000') {
@@ -159,6 +161,19 @@ class WorldLotto3M extends React.Component {
                         this.setBettingResultCount(ary.slice(7, ary.length-5));
                     } else if(command === '1173000') {
                         this.setBettingResult(ary.slice(7, ary.length-5));
+                    } else if(command === '9000000') {
+                        this.responseChangeExchangeAction(ary.slice(7, ary.length-5));
+                    } else if(command === '9000100') {
+                        alert('시스템 환경이 변경되어 로그인 화면으로 이동합니다.');
+                        tcpLogout(this.state.webSocket, this.props.uniqueId,this.props.trademark);
+                    // 관리자에게 금액 받음
+                    } else if(command === '9000400') {
+                        this.responseReceiveMoney(ary.slice(7, ary.length-5))
+                    }  else if(command === '9000300') {
+                        this.setState({
+                            bettingList: []
+                        })
+                        requestUserPointDB(this.state.webSocket, this.props.uniqueId);
                     }
                 }
             });
@@ -177,6 +192,23 @@ class WorldLotto3M extends React.Component {
             // 로그인 검증
             tcpLoginCheck(webSocket);
         });
+    }
+
+    responseReceiveMoney(byteArray) {
+        const content = decodeUTF16(byteArray.slice(3)).split('|');
+        alert(`관리자로부터 보유머니를 충전받았습니다.\n${content[0]}`);
+        requestUserPoint(this.state.webSocket, this.props.uniqueId);
+    }
+
+    // 충환전 처리통보
+    responseChangeExchangeAction(byteArray) {
+        const content = decodeUTF16(byteArray.slice(3)).split('|');
+        if(content[1] == 1) {
+            alert(`충전되었습니다 : ${content[0]}`);
+        } else {
+            alert(`환전신청이 취소되었습니다.`);
+        }
+        requestUserPoint(this.state.webSocket, this.props.uniqueId);
     }
 
     setBettingResultCount(byteArray) {
@@ -682,7 +714,7 @@ class WorldLotto3M extends React.Component {
                 <td>{value.date}</td>
                 <td>({typeObject.headType}){typeObject.bettingType}</td>
                 <td>{value.bettingMoney}</td>
-                <td>{value.result}</td>
+                <td>{value.result === 0 ? '대기' : value.result === 254 ? '취소' : value.result === 255 ? '특례' : value.resultMoney === 0 ? 'LOSE' : value.resultMoney}</td>
             </tr>);
         }
 

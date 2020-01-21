@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import createWebSocket from '../config/socketip';
-// 쿠키 추출
-// import getUUIDFromCookie from '../config/getcookie';
 import { encodeUTF8, encodeUTF16, decodeUTF8, decodeUTF16, checkTcpData } from '../config/byteparser';
 // import io from 'socket.io-client';
 // IE에서 위처럼 하면 script1002 Syntax Error가 남 IE 때문에 밑 구문으로 import 해야함
@@ -40,11 +38,18 @@ class Login extends React.Component {
 
     getConnectURL() {
         const url = location.href;
-
         if(url.includes('wbet')) {
             return 'www.wbet2020.com';
         } else if(url.includes('betsamples')) {
             return 'www.betsamples.com';
+        } else if(url.includes('p20')) {
+            return 'www.p20ball.com';
+        } else if(url.includes('o20')) {
+            return 'www.o20ball.com';
+        } else if(url.includes('n20')) {
+            return 'www.n20ball.com';
+        } else if(url.includes('b20')) {
+            return 'www.b20ball.com';
         }
     }
 
@@ -52,8 +57,8 @@ class Login extends React.Component {
     async getConnectCode() {
         try {
             const sendObject = {
-                url: 'www.wbet2020.com'
-                // url: this.getConnectURL()
+                // url: 'www.wbet2020.com'
+                url: this.getConnectURL()
             };
             const promiseResult = await promiseModule.post('/api/connect/information', sendObject);
             const codeData = JSON.parse(promiseResult);
@@ -439,6 +444,26 @@ class Login extends React.Component {
                 <div className={styles.signUpBox}>
                     <button className={styles.showSignUpFormButton} onClick={() => this.showSignUpModal()}>회원가입</button>
                     <button className={styles.showFindAccountFormButton} onClick={() => this.showFindAccountModal()}>계정찾기</button>
+                </div>
+                <div className={styles.downloadBox}>
+                    <div className={styles.pcDownloadBox}>
+                        <a href="http://worldupdate.biz/worldbet/wsetup.zip">
+                            <img src={require('../images/pc_icon.png')} />
+                            <span className={styles.downloadSpan}>PC버전</span>
+                        </a>
+                    </div>
+                    <div className={styles.mobileDownloadBox}>
+                        <a href="http://worldupdate.biz/worldbet/worldbetting.apk">
+                            <img src={require('../images/mobile_icon.png')} />
+                            <span className={styles.downloadSpan}>모바일버전</span>
+                        </a>
+                    </div>
+                    <div className={styles.printDownloadBox}>
+                        <a href="/guide" target="_blank">
+                            <img src={require('../images/print_icon.png')} />
+                            <span className={styles.downloadSpan}>가이드</span>
+                        </a>
+                    </div>
                 </div>
 
                 { this.state.modal !== false &&
