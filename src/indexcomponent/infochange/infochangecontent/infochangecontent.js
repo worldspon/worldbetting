@@ -82,15 +82,14 @@ export default class InfoChangeContent extends React.Component {
     }
 
     inputCheck() {
-        console.log('input');
         if(this.state.changePassword !== this.state.changePasswordCheck) {
-            alert('변경할 비밀번호를 확인해주세요.');
+            alert(this.props.alert.errorChangePw);
             return false;
         }else if(this.state.currentPassword === '' || this.state.currentPassword.length < 4) {
-            alert('현재 비밀번호를 확인해주세요');
+            alert(this.props.alert.errorCurrentPw);
             return false;
         }else if(this.state.changePassword.length < 4 || this.state.changePasswordCheck.length < 4) {
-            alert('비밀번호는 4글 자 이상 입력해주세요.');
+            alert(this.props.alert.errorPwLength);
             return false;
         }else return true;
     }
@@ -105,62 +104,68 @@ export default class InfoChangeContent extends React.Component {
             <div className={styles.infoChangeContentWrap}>
                 <div>
                     <div className={styles.infoRows}>
-                        <span className={styles.rowTitle}>현재 비밀번호</span>
+                        <span className={styles.rowTitle}>{this.props.langPack.currentPw}</span>
                         <input
                             type="password"
+                            readOnly={this.props.userInfoReadOnly == 0 ? true : false}
                             className={styles.currentPw}
                             value={this.state.currentPassword}
-                            placeholder="현재 비밀번호"
+                            placeholder="current password"
                             maxLength='10'
                             onChange={(e) => this.setUserCurrentPw(e)}
                         />
                     </div>
                     <div className={styles.infoRows}>
-                        <span className={styles.rowTitle}>변경할 비밀번호</span>
+                        <span className={styles.rowTitle}>{this.props.langPack.changePw}</span>
                         <input
                             type="password"
+                            readOnly={this.props.userInfoReadOnly == 0 ? true : false}
                             className={styles.changePw}
                             value={this.state.changePassword}
-                            placeholder="변경할 비밀번호"
+                            placeholder="change password"
                             maxLength='10'
                             onChange={(e) => this.setUserChangePw(e)}
                         />
                     </div>
                     <div className={styles.infoRows}>
-                        <span className={styles.rowTitle}>변경할 비밀번호 확인</span>
+                        <span className={styles.rowTitle}>{this.props.langPack.checkPw}</span>
                         <input
                             type="password"
+                            readOnly={this.props.userInfoReadOnly == 0 ? true : false}
                             className={styles.checkPw}
                             value={this.state.changePasswordCheck}
-                            placeholder="비밀번호 확인"
+                            placeholder="password check"
                             maxLength='10'
                             onChange={(e) => this.setUserChangePwCheck(e)}
                         />
                     </div>
                     <div className={styles.infoRows}>
-                        <span className={styles.rowTitle}>전화번호</span>
+                        <span className={styles.rowTitle}>{this.props.langPack.tel}</span>
                         <input
                             type="tel"
+                            readOnly={this.props.userInfoReadOnly == 0 ? true : false}
                             className={styles.phoneNum}
                             value={this.state.userTel}
-                            placeholder="전화번호"
+                            placeholder="tel"
                             onChange={(e) => this.setUserTel(e)}
                         />
                     </div>
                     <div className={styles.infoRows}>
-                        <span className={styles.rowTitle}>계좌정보</span>
+                        <span className={styles.rowTitle}>{this.props.langPack.account}</span>
                         <input
                             type="text"
+                            readOnly={this.props.userInfoReadOnly == 0 ? true : false}
                             className={styles.bankName}
                             value={this.state.userBank}
-                            placeholder="은행명"
+                            placeholder="bank name"
                             onChange={(e) => this.setUserBank(e)}
                         />
                         <input
                             type="text"
+                            readOnly={this.props.userInfoReadOnly == 0 ? true : false}
                             className={styles.accountUser}
                             value={this.state.userName}
-                            placeholder="예금주"
+                            placeholder="user"
                             onChange={(e) => this.setUserName(e)}
                         />
                     </div>
@@ -168,19 +173,21 @@ export default class InfoChangeContent extends React.Component {
                         <span className={styles.rowTitle}></span>
                         <input
                             type="text"
+                            readOnly={this.props.userInfoReadOnly == 0 ? true : false}
                             className={styles.accountNum}
                             value={this.state.userAccount}
-                            placeholder="계좌번호"
+                            placeholder="account"
                             onChange={(e) => this.setUserAccount(e)}
                         />
                     </div>
                     <div className={styles.infoRows}>
-                        <span className={styles.rowTitle}>코인정보</span>
+                        <span className={styles.rowTitle}>{this.props.langPack.coin}</span>
                         <input
                             type="text"
+                            readOnly={this.props.userInfoReadOnly == 0 ? true : false}
                             className={styles.userCoinName}
                             value={this.state.userCoin}
-                            placeholder="코인명"
+                            placeholder="coin name"
                             onChange={(e) => this.setUserCoin(e)}
                         />
                     </div>
@@ -188,15 +195,16 @@ export default class InfoChangeContent extends React.Component {
                         <span className={styles.rowTitle}></span>
                         <input
                             type="text"
+                            readOnly={this.props.userInfoReadOnly == 0 ? true : false}
                             className={styles.userCoinWallet}
                             value={this.state.userCoinWallet}
-                            placeholder="지갑주소"
+                            placeholder="wallet"
                             onChange={(e) => this.setUserCoinWallet(e)}
                         />
                     </div>
                     <div className={styles.infoChangeCancelBox}>
-                        <button className={styles.infoChangeButton} onClick={() => this.changeUserInfo()}>정보수정</button>
-                        <button className={styles.cancelButton} onClick={() => {this.props.destroyModal()}}>취소</button>
+                        <button className={styles.infoChangeButton} onClick={() => this.changeUserInfo()}>{this.props.langPack.changeInfo}</button>
+                        <button className={styles.cancelButton} onClick={() => {this.props.destroyModal()}}>{this.props.langPack.cancel}</button>
                     </div>
                 </div>
             </div>

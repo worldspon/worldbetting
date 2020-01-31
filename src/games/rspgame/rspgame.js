@@ -54,6 +54,7 @@ import listStyles from '../commoncomponent/gameresult/gameresult.css';
 import promiseModule from '../../config/promise';
 import Pagination from '../../commoncomponent/pagination/pagination';
 import { printReceipt } from '../../commonfunction/printbetting';
+import LanguagePack from '../../lang/langpack';
 
 // 내부 코드에서 표시되는 page는 배열 index로 실제 표시 page는 +1 하여 표시됨
 
@@ -79,7 +80,7 @@ class RSPGame extends React.Component {
             gameResultComponent: false,
             bettingResultComponent: false,
             // 게임 결과테이블 결과부분 텍스트
-            gameResultThText: ['왼쪽', '오른쪽'],
+            gameResultThText: [this.props.langPack.rspGame.tableTh[0], this.props.langPack.rspGame.tableTh[1]],
             bettingAllowStart: 0,
             bettingAllowEnd: 0,
             // 게임 세팅 정보
@@ -164,7 +165,7 @@ class RSPGame extends React.Component {
                     } else if(command === '9000000') {
                         this.responseChangeExchangeAction(ary.slice(7, ary.length-5));
                     } else if(command === '9000100') {
-                        alert('시스템 환경이 변경되어 로그인 화면으로 이동합니다.');
+                        alert(this.props.langPack.alert.sysEnvChange);
                         tcpLogout(this.state.webSocket, this.props.uniqueId,this.props.trademark);
                     // 관리자에게 금액 받음
                     } else if(command === '9000400') {
@@ -178,14 +179,17 @@ class RSPGame extends React.Component {
                 }
             });
 
-            // force client disconnect from server
             webSocket.on('forceDisconnect', () => {
-                webSocket.disconnect();
+                webSocket.emit('disconnect');
+            });
+
+            webSocket.on('tcpForceClose', (message) => {
+                webSocket.emit('disconnect',message);
             });
         
             webSocket.on('disconnect', (message) => {
                 sessionStorage.clear();
-                alert(message);
+                alert(message);    
                 location.href='/login';
             });
 
@@ -196,7 +200,7 @@ class RSPGame extends React.Component {
     
     responseReceiveMoney(byteArray) {
         const content = decodeUTF16(byteArray.slice(3)).split('|');
-        alert(`관리자로부터 보유머니를 충전받았습니다.\n${content[0]}`);
+        alert(`${this.props.langPack.alert.sysEnvChange}\n${content[0]}`);
         requestUserPoint(this.state.webSocket, this.props.uniqueId);
     }
 
@@ -204,9 +208,9 @@ class RSPGame extends React.Component {
     responseChangeExchangeAction(byteArray) {
         const content = decodeUTF16(byteArray.slice(3)).split('|');
         if(content[1] == 1) {
-            alert(`충전되었습니다 : ${content[0]}`);
+            alert(`${this.props.langPack.alert.chargeExchangeResult[0]} : ${content[0]}`);
         } else {
-            alert(`환전신청이 취소되었습니다.`);
+            alert(this.props.langPack.alert.chargeExchangeResult[1]);
         }
         requestUserPoint(this.state.webSocket, this.props.uniqueId);
     }
@@ -242,7 +246,7 @@ class RSPGame extends React.Component {
         if(errorCode === 0) {
             requestUserPoint(this.state.webSocket, this.props.uniqueId);
         } else {
-            alert('전환할 수수료가 없습니다.');
+            alert(this.props.langPack.alert.errorCommission);
         }
     }
 
@@ -264,26 +268,22 @@ class RSPGame extends React.Component {
             // 로그인 인증 실패
             switch (errorCode) {
                 case 6:
-                    this.state.webSocket.emit('disconnect','기간이 만료된 세션입니다.');
-                    // alert('기간이 만료된 세션입니다.');
+                    this.state.webSocket.emit('disconnect', this.props.langPack.alert.sessionEnd);
                     sessionStorage.clear();
                     location.href = '/login';
                     break;
                 case 250:
-                    this.state.webSocket.emit('disconnect','통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
-                    // alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
+                    this.state.webSocket.emit('disconnect', this.props.langPack.alert.errorConnectDB);
                     sessionStorage.clear();
                     location.href = '/login';
                     break;
                 case 255:
-                    this.state.webSocket.emit('disconnect','통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
-                    // alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
+                    this.state.webSocket.emit('disconnect', this.props.langPack.alert.errorConnectDB);
                     sessionStorage.clear();
                     location.href = '/login';
                     break;
                 default:
-                    this.state.webSocket.emit('disconnect','알수없는 오류입니다.');
-                    alert('알수없는 오류입니다.');
+                    this.state.webSocket.emit('disconnect', this.props.langPack.alert.default);
                     sessionStorage.clear();
                     location.href = '/login';
                     break;
@@ -295,7 +295,7 @@ class RSPGame extends React.Component {
     responseSetUserState(byteArray) {
         const errorCode = parseInt(byteArray.slice(0,1));
         if(errorCode !== 0) {
-            alert('게임 진입에 실패하였습니다.');
+            alert(this.props.langPack.alert.errorEnterGame);
             // this.tryLogout();
         } else if(errorCode === 0) {
             // 게임환경세팅 정보를 호출하는 함수
@@ -370,7 +370,7 @@ class RSPGame extends React.Component {
                 userBonus: parseInt(content[2])
             });
         } else if(errorCode === 250) {
-            alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
+            alert(this.props.langPack.alert.errorConnectDB);
         }
     }
 
@@ -388,9 +388,9 @@ class RSPGame extends React.Component {
                 requestBettingList(this.state.webSocket, this.props.uniqueId, this.state.gameType);
             });
         } else if(errorCode === 1) {
-            alert('게임 회차 최신화에 실패하였습니다.');
+            alert(this.props.langPack.alert.errorGameRoundUpdate);
         }else if(errorCode === 250 || errorCode === 255) {
-            alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
+            alert(this.props.langPack.alert.errorConnectDB);
         }
     }
 
@@ -406,9 +406,9 @@ class RSPGame extends React.Component {
                 this.setGameTimer();
             });
         } else if(errorCode === 1) {
-            alert('게임 시간 동기화에 실패하였습니다.');
+            alert(this.props.langPack.alert.errorGameCountUpdate);
         } else if(errorCode === 250 || errorCode === 255) {
-            alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
+            alert(this.props.langPack.alert.errorConnectDB);
         }
     }
 
@@ -449,7 +449,7 @@ class RSPGame extends React.Component {
         const nextBettingMoney = this.state.bettingMoney + bettingMoney;
 
         if(bettingMoney >= maxBettingMoney || nextBettingMoney >= maxBettingMoney) {
-            alert('베팅 금액이 너무 큽니다.');
+            alert(this.props.langPack.alert.errorTooMuchBet);
         } else if(inputFlag) {
             this.setState({
                 bettingMoney: bettingMoney
@@ -480,15 +480,15 @@ class RSPGame extends React.Component {
     // 게임 베팅 시도
     gameBetting() {
         if( this.state.selectBettingTypeNum === null) {
-            alert('게임을 선택해주세요.');
+            alert(this.props.langPack.alert.errorSelectGame);
         } else if(this.state.bettingMoney <= 0) {
-            alert('베팅 금액을 입력해주세요.');
+            alert(this.props.langPack.alert.errorInputMoney);
         } else if(
             this.state.gameCount > this.state.bettingAllowStart ||
             this.state.gameCount < this.state.bettingAllowEnd) {
-                alert('베팅 가능 시간이 아닙니다.');
+                alert(this.props.langPack.alert.errorImpossibleBetTime);
         } else if(this.state.bettingMoney > (this.state.totalBettingLimit - this.state.currentTotalBettingMoney) || this.state.bettingMoney < this.state.bettingMin || this.state.bettingMoney > this.state.bettingMax){
-            alert('베팅 가능 금액이 아닙니다.');
+            alert(this.props.langPack.alert.errorImpossibleBetMoney);
         } else {
             requestGameBetting(this.state.webSocket, this.props.uniqueId, this.state.gameType, this.state.selectBettingTypeNum, this.state.bettingMoney)
         }
@@ -501,10 +501,24 @@ class RSPGame extends React.Component {
             // 베팅 성공시 선택 초기화 및 유저 금액 최신화
             this.bettingAllClear();
             requestUserPoint(this.state.webSocket, this.props.uniqueId);
-        } else if(errorCode === 250) {
-            alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
+        } else if(errorCode == 2) {
+            alert(this.props.langPack.alert.errorImpossibleBetMoney);
+        } else if(errorCode == 3) {
+            alert(this.props.langPack.alert.errorBetType);
+        } else if(errorCode == 4) {
+            alert(this.props.langPack.alert.errorBetTime);
+        } else if(errorCode == 5) {
+            alert(this.props.langPack.alert.errorBetGameMoney);
+        } else if(errorCode == 6) {
+            alert(this.props.langPack.alert.errorBetLimit);
+        } else if(errorCode == 7) {
+            alert(this.props.langPack.alert.errorBetPrevRound);
+        } else if(errorCode == 8) {
+            alert(this.props.langPack.alert.errorBetBalance);
+        } else if(errorCode == 250 || errorCode == 255) {
+            alert(this.props.langPack.alert.errorConnectDB);
         } else {
-            alert('베팅에 실패하였습니다.');
+            alert(this.props.langPack.alert.default);
         }
     }
 
@@ -699,7 +713,7 @@ class RSPGame extends React.Component {
                 <td>{value.date}</td>
                 <td>({typeObject.headType}){typeObject.bettingType}</td>
                 <td>{value.bettingMoney}</td>
-                <td>{value.result === 0 ? '대기' : value.result === 254 ? '취소' : value.result === 255 ? '특례' : value.resultMoney === 0 ? 'LOSE' : value.resultMoney}</td>
+                <td>{value.result === 0 ? this.props.langPack.betResult[0] : value.result === 254 ? this.props.langPack.betResult[1] : value.result === 255 ? this.props.langPack.betResult[2] : value.resultMoney === 0 ? 'LOSE' : value.resultMoney}</td>
             </tr>);
         }
 
@@ -723,6 +737,7 @@ class RSPGame extends React.Component {
             <div className={common.wrap}>
                 <div className={common.main}>
                     <Header
+                        langPack={this.props.langPack.header}
                         logoURL={this.state.logoURL}
                         trademark={this.props.trademark}
                         userPoint={this.state.userPoint}
@@ -779,6 +794,7 @@ class RSPGame extends React.Component {
                         this.state.bettingResultComponent &&
                         <div className={styles.contentWrap}>
                             <BettingResult
+                                langPack={this.props.langPack.bettingResult}
                                 gameTitle={this.state.gameTitle}
                                 gameType={this.state.gameType}
                                 bettingResultList={this.state.bettingResultList}
@@ -803,6 +819,7 @@ class RSPGame extends React.Component {
                         this.state.gameResultComponent &&
                         <div className={styles.contentWrap}>
                             <GameResult
+                                langPack={this.props.langPack.gameResult}
                                 gameTitle={this.state.gameTitle}
                                 destroyGameResultComponent={() => {this.destroyGameResultComponent()}}
                                 gameResultThText={this.state.gameResultThText}
@@ -831,6 +848,7 @@ ReactDOM.render(
     <RSPGame
         trademark={sessionStorage.getItem('userId')}
         uniqueId={sessionStorage.getItem('uniqueId')}
+        langPack={sessionStorage.getItem('lang') === null ? LanguagePack.ko.game : LanguagePack[sessionStorage.getItem('lang')].game}
     />,
     document.getElementById('root')
 );

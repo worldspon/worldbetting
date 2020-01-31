@@ -10,6 +10,8 @@ import styles from './login.css';
 import promiseModule from '../config/promise';
 import FindAccount from './components/findaccount/findaccount';
 import SignUp from './components/signup/signup';
+import LanguagePack from '../lang/langpack';
+
 
 class Login extends React.Component {
     constructor(props) {
@@ -30,7 +32,7 @@ class Login extends React.Component {
             // 계정찾기 완료시 계정 저장
             findAccount: null,
             // 회원가입 완료시 회원가입 축하 화면 flag
-            signUpFlag: false
+            signUpFlag: false,
         };
         this.pwInput = React.createRef();
         this.loginButton = React.createRef();
@@ -72,6 +74,11 @@ class Login extends React.Component {
         } catch(error) {
             alert(error.message);
         }
+    }
+
+    changeLanguage(type) {
+        // sessionStorage.setItem('lang', type);
+        alert('준비중입니다');
     }
 
 
@@ -171,29 +178,37 @@ class Login extends React.Component {
             // 로그인 인증 실패
             switch (errorCode) {
                 case 1:
-                    alert('존재하지 않는 사용자입니다.');
+                    // 존재하지 않는 사용자
+                    alert(this.props.langPack.alert.noUser);
                     break;
                 case 2:
-                    alert('비밀번호가 일치하지않습니다.');
+                    // 비밀번호 불일치
+                    alert(this.props.langPack.alert.pwWrong);
                     break;
                 case 3:
-                    alert('접속불가 상태입니다.');
+                    // 접속불가 상태
+                    alert(this.props.langPack.alert.connectError);
                     break;
                 case 4:
-                    alert('중복접속 상태입니다.');
+                    // 중복접속 상태
+                    alert(this.props.langPack.alert.doubleConnect);
                     break;
                 case 5:
-                    alert('메모리에 이미 접속상태입니다.');
+                    // 메모리에 이미 접속상태
+                    alert(this.props.langPack.alert.memory);
                     location.reload();
                     break;
                 case 250:
-                    alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
+                    // DB 연결 에러
+                    alert(this.props.langPack.alert.connectErrorDB);
                     break;
                 case 250:
-                    alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
+                    // DB 연결 에러
+                    alert(this.props.langPack.alert.connectErrorDB);
                     break;
                 default:
-                    alert('알수없는 오류입니다.');
+                    // 알수없는 오류
+                    alert(this.props.langPack.alert.default);
                     break;
             }
         }
@@ -217,7 +232,8 @@ class Login extends React.Component {
                 findAccount: content
             });
         } else {
-            alert('계정을 찾을수 없습니다.');
+            // 계정을 찾을 수 없습니다.
+            alert(this.props.langPack.alert.failedFindAccount);
         }
     }
 
@@ -238,17 +254,23 @@ class Login extends React.Component {
                 signUpFlag: true
             });
         } else if(errorCode === 1) {
-            alert('아이디를 네 자 이상 입력해주세요.');
+            // 아이디를 네 자 이상 입력해주세요
+            alert(this.props.langPack.alert.idLength);
         } else if(errorCode === 2) {
-            alert('비밀번호를 한 자 이상 입력해주세요.');
+            // 비밀번호를 네 자 이상 입력해주세요
+            alert(this.props.langPack.alert.pwLength);
         } else if(errorCode === 3) {
-            alert('추천인 아이디가 존재하지않습니다.');
+            // 추천인 아이디가 존재하지않습니다.
+            alert(this.props.langPack.alert.noReferrer);
         } else if(errorCode === 4) {
-            alert('이미 사용하고 있는 아이디입니다.');
+            // 이미 사용하고 있는 아이디
+            alert(this.props.langPack.alert.existId);
         } else if(errorCode === 5) {
-            alert('이미 사용하고 있는 전화번호입니다.');
+            // 이미 사용하고 있는 전화번호
+            alert(this.props.langPack.alert.existPh);
         } else {
-            alert('오류가 발생했습니다. 다시 시도해주세요.');
+            // 알수없는 오류
+            alert(this.props.langPack.alert.default);
         }
     }
 
@@ -419,7 +441,7 @@ class Login extends React.Component {
                     <input
                         className={styles.idInput + ' ' + `${this.state.userId.length <= 3 ? '' : styles.inputCheckImage}`}
                         type="text"
-                        placeholder="아이디"
+                        placeholder="ID"
                         maxLength="10"
                         onChange={(e) => this.idInputChange(e)}
                         onKeyPress={(e) => this.focusPwInput(e)}
@@ -429,7 +451,7 @@ class Login extends React.Component {
                         className={styles.pwInput + ' ' + `${this.state.userPw.length <= 0 ? '' : styles.inputCheckImage}`}
                         ref={this.pwInput}
                         type="password"
-                        placeholder="비밀번호"
+                        placeholder="Password"
                         onChange={(e) => this.pwInputChange(e)}
                         onKeyPress={(e) => this.pwInputEnter(e)}
                         value={this.state.userPw}
@@ -438,32 +460,54 @@ class Login extends React.Component {
                         className={styles.loginButton}
                         ref={this.loginButton}
                         onClick={() => this.tryLogin()}
-                    >로그인
+                    >{this.props.langPack.button.login}
                     </button>
                 </div>
                 <div className={styles.signUpBox}>
-                    <button className={styles.showSignUpFormButton} onClick={() => this.showSignUpModal()}>회원가입</button>
-                    <button className={styles.showFindAccountFormButton} onClick={() => this.showFindAccountModal()}>계정찾기</button>
+                    <button className={styles.showSignUpFormButton} onClick={() => this.showSignUpModal()}>{this.props.langPack.button.signUp}</button>
+                    <button className={styles.showFindAccountFormButton} onClick={() => this.showFindAccountModal()}>{this.props.langPack.button.findAccount}</button>
                 </div>
                 <div className={styles.downloadBox}>
                     <div className={styles.pcDownloadBox}>
                         <a href="http://worldupdate.biz/worldbet/wsetup.zip">
                             <img src={require('../images/pc_icon.png')} />
-                            <span className={styles.downloadSpan}>PC버전</span>
+                            <span className={styles.downloadSpan}>{this.props.langPack.download.pc}</span>
                         </a>
                     </div>
                     <div className={styles.mobileDownloadBox}>
                         <a href="http://worldupdate.biz/worldbet/worldbetting.apk">
                             <img src={require('../images/mobile_icon.png')} />
-                            <span className={styles.downloadSpan}>모바일버전</span>
+                            <span className={styles.downloadSpan}>{this.props.langPack.download.mobile}</span>
                         </a>
                     </div>
                     <div className={styles.printDownloadBox}>
                         <a href="/guide" target="_blank">
                             <img src={require('../images/print_icon.png')} />
-                            <span className={styles.downloadSpan}>가이드</span>
+                            <span className={styles.downloadSpan}>{this.props.langPack.download.guide}</span>
                         </a>
                     </div>
+                </div>
+                <div className={styles.topHeader}>
+                    <img
+                        src={require('../images/ko_flag.png')}
+                        className={styles.flagImage}
+                        onClick={()=>this.changeLanguage('ko')}
+                    />
+                    <img
+                        src={require('../images/uk_flag.png')}
+                        className={styles.flagImage}
+                        onClick={()=>this.changeLanguage('uk')}
+                    />
+                    <img
+                        src={require('../images/ch_flag.png')}
+                        className={styles.flagImage}
+                        onClick={() => this.changeLanguage('ch')}
+                    />
+                    <img
+                        src={require('../images/jp_flag.png')}
+                        className={styles.flagImage}
+                        onClick={() => this.changeLanguage('jp')}
+                    />
                 </div>
 
                 { this.state.modal !== false &&
@@ -475,10 +519,23 @@ class Login extends React.Component {
                             <img className={styles.modalLogo} src={require('../images/main_logo.png')} />
                         </div>
                         { this.state.modal === 'findAccount' &&
-                            <FindAccount webSocket={this.state.webSocket} checkInputClass={styles.inputCheckImage} requestUserId={(tel) => this.requestUserId(tel)} findAccount={this.state.findAccount} hideModal={() => this.hideModal()} />
+                            <FindAccount
+                                langPack={this.props.langPack.findAccount}
+                                webSocket={this.state.webSocket}
+                                checkInputClass={styles.inputCheckImage}
+                                requestUserId={(tel) => this.requestUserId(tel)}
+                                findAccount={this.state.findAccount}
+                                hideModal={() => this.hideModal()}
+                            />
                         }
                         { this.state.modal === 'signUp' && 
-                            <SignUp checkInputClass={styles.inputCheckImage} requestSignUp={(userObject) => this.requestSignUp(userObject)} signUpFlag={this.state.signUpFlag} hideModal={() => this.hideModal()} />
+                            <SignUp
+                                langPack={this.props.langPack.signUp}
+                                checkInputClass={styles.inputCheckImage}
+                                requestSignUp={(userObject) => this.requestSignUp(userObject)}
+                                signUpFlag={this.state.signUpFlag}
+                                hideModal={() => this.hideModal()}
+                            />
                         }
                         </div>
                     </div>
@@ -488,8 +545,11 @@ class Login extends React.Component {
     }
 }
 
+sessionStorage.getItem('lang') === null ? sessionStorage.setItem('lang', 'ko'): '';
 
 ReactDOM.render(
-    <Login />,
+    <Login
+        langPack={LanguagePack[sessionStorage.getItem('lang')].login}
+    />,
     document.getElementById('root')
 );

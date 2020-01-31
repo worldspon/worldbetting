@@ -59,7 +59,7 @@ export default class ApplyAccountType extends React.Component {
         const exchangeMoney = parseInt(this.state.exchangeMoney);
         // 0보다 작은금액 또는 숫자가 아닌 금액 또는 출금 가능금액 이하
         if(exchangeMoney <= 0 || isNaN(exchangeMoney) || this.props.userPoint < exchangeMoney) {
-            alert('올바른 금액을 입력해주세요.');
+            alert(this.props.langPack.errorExchangeMoney);
             return false;
         } else if (this.inputCheck()) {
             const data = `|2|${this.state.userName}|${this.state.userBank}|${this.state.userAccount}|${this.state.exchangeMoney}|`;
@@ -67,7 +67,7 @@ export default class ApplyAccountType extends React.Component {
             this.props.requestChargeExchange(data);
             this.resetInput();
         } else {
-            alert('모든 값을 입력해주세요.');
+            alert(this.props.langPack.errorExchangeInput);
         }
     }
 
@@ -98,40 +98,40 @@ export default class ApplyAccountType extends React.Component {
     render() {
         return (
             <div>
-                <p className={styles.possibleMoney}>출금 가능 금액 : {new Intl.NumberFormat().format(this.props.userPoint)}</p>
+                <p className={styles.possibleMoney}>{this.props.langPack.withdrawable} : {new Intl.NumberFormat().format(this.props.userPoint)}</p>
                 <div className={styles.accountRows}>
-                    <span className={styles.rowTitle}>예금주</span>
+                    <span className={styles.rowTitle}>{this.props.langPack.user}</span>
                     <input
                         type="text"
                         className={styles.accountUserName}
                         value={this.state.userName}
-                        placeholder="이름"
+                        placeholder="name"
                         onChange={(e) => this.setUserName(e)}
                     />
                 </div>
                 <div className={styles.accountRows}>
-                    <span className={styles.rowTitle}>계좌</span>
+                    <span className={styles.rowTitle}>{this.props.langPack.account}</span>
                     <input
                         type="text"
                         className={styles.accountBank}
-                        placeholder="은행명"
+                        placeholder="bank name"
                         value={this.state.userBank}
                         onChange={(e) => this.setUserBank(e)}
                     />
                     <input
                         type="text"
                         className={styles.accountNumber}
-                        placeholder="계좌번호"
+                        placeholder="account"
                         value={this.state.userAccount}
                         onChange={(e) => this.setUserAccount(e)}
                     />
                 </div>
                 <div className={styles.accountRows}>
-                    <span className={styles.rowTitle}>금액</span>
+                    <span className={styles.rowTitle}>{this.props.langPack.money}</span>
                     <input
                         type="text"
                         className={styles.exchangeMoney}
-                        placeholder="직접입력"
+                        placeholder="money"
                         value={this.state.exchangeMoney}
                         onChange={(e) => this.setExchangeMoney(e)}
                     />
@@ -164,8 +164,8 @@ export default class ApplyAccountType extends React.Component {
                     </button>
                 </div>
                 <div className={styles.applyCancelBox}>
-                    <button className={styles.applyButton} onClick={() => this.applyToExchange()}>환전신청</button>
-                    <button className={styles.cancelButton} onClick={() => {this.props.destroyModal()}}>취소</button>
+                    <button className={styles.applyButton} onClick={() => this.applyToExchange()}>{this.props.langPack.exchangeApply}</button>
+                    <button className={styles.cancelButton} onClick={() => {this.props.destroyModal()}}>{this.props.langPack.cancel}</button>
                 </div>
             </div>
         )

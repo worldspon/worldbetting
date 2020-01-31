@@ -28,18 +28,18 @@ export default class FindAccount extends React.Component {
                         className={styles.userTelInput + ' ' + `${this.state.findAccountTel.length <= 9 ? '' : this.props.checkInputClass}`}
                         type="tel"
                         value={this.state.findAccountTel}
-                        placeholder="휴대폰번호"
+                        placeholder="PHONE NUMBER"
                         onChange={(e) => this.findAccountTelInputChange(e)}
                         onKeyPress={(e) => {e.key === 'Enter' ? this.props.requestUserId(this.state.findAccountTel) : ''}}
                     />
-                        <button className={styles.findAccountButton} onClick={() => this.props.requestUserId(this.state.findAccountTel)}>아이디찾기</button>
+                        <button className={styles.findAccountButton} onClick={() => this.props.requestUserId(this.state.findAccountTel)}>{this.props.langPack.button.findAccount}</button>
                     </div>
                 }
                 { this.props.findAccount !== null &&
                     <div>
                         <p className={styles.findMessage}>{this.state.findAccountTel}님의 아이디는</p>
                         <p className={styles.findMessage}>{this.props.findAccount}입니다.</p>
-                        <button className={styles.findAccountButton} onClick={() => this.props.hideModal()}>확인</button>
+                        <button className={styles.findAccountButton} onClick={() => this.props.hideModal()}>{this.props.langPack.button.confirm}</button>
                     </div>
                 }
             </div>

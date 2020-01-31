@@ -19,7 +19,7 @@ import Charge from './indexcomponent/charge/charge';
 import Exchange from './indexcomponent/exchange/exchange';
 import InfoChange from './indexcomponent/infochange/infochange';
 import requestGameState from './commonfunction/requestgamestate';
-
+import LanguagePack from './lang/langpack';
 
 class Index extends React.Component {
     constructor(props) {
@@ -110,7 +110,8 @@ class Index extends React.Component {
                     } else if(command === '9000000') {
                         this.responseChangeExchangeAction(ary.slice(7, ary.length-5));
                     } else if(command === '9000100') {
-                        alert('시스템 환경이 변경되어 로그인 화면으로 이동합니다.');
+                        // 시스템 환경 설정이 변경됨
+                        alert(this.props.langPack.alert.sysEnvChange);
                         this.tryLogout();
                     // 관리자에게 금액 받음
                     } else if(command === '9000400') {
@@ -141,17 +142,20 @@ class Index extends React.Component {
 
     responseReceiveMoney(byteArray) {
         const content = decodeUTF16(byteArray.slice(3)).split('|');
-        alert(`관리자로부터 보유머니를 충전받았습니다.\n${content[0]}`);
+        // 관리자에게 금액 받음
+        alert(`${this.props.langPack.alert.receiveMoney}\n${content[0]}`);
+        this.requestUserMoney();
     }
 
     // 충환전 처리통보
     responseChangeExchangeAction(byteArray) {
         const content = decodeUTF16(byteArray.slice(3)).split('|');
-        console.log(content);
         if(content[1] == 1) {
-            alert(`충전되었습니다 : ${content[0]}`);
+            // 충전 완료
+            alert(`${this.props.langPack.alert.chargeSuccess} : ${content[0]}`);
         } else {
-            alert(`환전신청이 취소되었습니다.`);
+            // 환전 취소
+            alert(this.props.langPack.alert.exchangeFailed);
         }
         this.requestUserMoney();
     }
@@ -183,26 +187,26 @@ class Index extends React.Component {
             // 로그인 인증 실패
             switch (errorCode) {
                 case 6:
-                    this.state.webSocket.emit('disconnect','기간이 만료된 세션입니다.');
-                    // alert('기간이 만료된 세션입니다.');
+                    // 기간이 만료된 세션
+                    this.state.webSocket.emit('disconnect', this.props.langPack.alert.loginCheckFail);
                     sessionStorage.clear();
                     location.href = '/login';
                     break;
                 case 250:
-                    this.state.webSocket.emit('disconnect','통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
-                    // alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
+                    // DB 접속 에러
+                    this.state.webSocket.emit('disconnect', this.props.langPack.alert.connectErrorDB);
                     sessionStorage.clear();
                     location.href = '/login';
                     break;
                 case 255:
-                    this.state.webSocket.emit('disconnect','통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
-                    // alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
+                    // DB 접속 에러
+                    this.state.webSocket.emit('disconnect', this.props.langPack.alert.connectErrorDB);
                     sessionStorage.clear();
                     location.href = '/login';
                     break;
                 default:
-                    this.state.webSocket.emit('disconnect','알수없는 오류입니다.');
-                    alert('알수없는 오류입니다.');
+                    // 알수없는 오류입니다.
+                    this.state.webSocket.emit('disconnect', this.props.langPack.alert.default);
                     sessionStorage.clear();
                     location.href = '/login';
                     break;
@@ -263,7 +267,7 @@ class Index extends React.Component {
     setUserState(byteArray) {
         const errorCode = parseInt(byteArray.slice(0,1));
         if(errorCode !== 0) {
-            alert('로비 진입에 실패하였습니다.');
+            alert(this.props.langPack.alert.failEnterLobby);
             // this.tryLogout();
         }
     }
@@ -289,7 +293,7 @@ class Index extends React.Component {
                 userBonus: parseInt(content[2])
             });
         } else if(errorCode === 250 || errorCode === 255) {
-            alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
+            alert(this.props.langPack.alert.connectErrorDB);
         }
     }
 
@@ -318,7 +322,8 @@ class Index extends React.Component {
                     coin: content[4],
                     coinWallet: content[5]
                 },
-                chargeExchangeType: parseInt(content[6])
+                chargeExchangeType: parseInt(content[6]),
+                userInfoReadOnly: content[7]
             }, () => {
                 if(this.state.chargeExchangeType === 1) {
                     // 충환전 타입이 코인이면 회사 코인 리스트 호출
@@ -326,7 +331,7 @@ class Index extends React.Component {
                 }
             });
         } else if(errorCode === 250 || errorCode === 255) {
-            alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
+            alert(this.props.langPack.alert.connectErrorDB);
         }
     }
 
@@ -348,7 +353,7 @@ class Index extends React.Component {
                 companyAccount: decodeUTF16(byteArray.slice(3)).split('|')
             });
         } else {
-            alert('계좌 정보를 받아오지 못했습니다.');
+            alert(this.props.langPack.alert.failGetCompanyAccount);
         }
     }
 
@@ -406,27 +411,27 @@ class Index extends React.Component {
     responseChargeExchangeResult(byteArray) {
         const errorCode = parseInt(byteArray.slice(0,1));
         if( errorCode === 0 ) {
-            alert('신청이 완료되었습니다.')
+            alert(this.props.langPack.alert.successChargeExchangeApply)
         } else {
             // 로그인 인증 실패
             switch (errorCode) {
                 case 1:
-                    alert('로비에서만 신청이 가능합니다.');
+                    alert(this.props.langPack.alert.errorChargeExchangeOne);
                     break;
                 case 2:
-                    alert('올바르지 않은 금액입니다.');
+                    alert(this.props.langPack.alert.errorChargeExchangeTwo);
                     break;
                 case 3:
-                    alert('환전금액이 부족합니다.');
+                    alert(this.props.langPack.alert.errorChargeExchangeThree);
                     break;
                 case 250:
-                    alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
+                    alert(this.props.langPack.alert.errorChargeExchangeDB);
                     break;
                 case 255:
-                    alert('통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)');
+                    alert(this.props.langPack.alert.errorChargeExchangeDB);
                     break;
                 default:
-                    alert('알수없는 오류입니다.');
+                    alert(this.props.langPack.alert.default);
                     break;
             }
         }
@@ -443,8 +448,9 @@ class Index extends React.Component {
 
     responseChargeExchangeListCount(byteArray) {
         const content = decodeUTF16(byteArray.slice(3)).split('|');
+        console.log(content);
         this.setState({
-            chargeExchangeListEndPage: Math.ceil(parseInt(content[0])/10) - 1
+            chargeExchangeListEndPage: content[0] == 0 ? 0 : Math.ceil(parseInt(content[0])/10) - 1
         });
 
     }
@@ -511,15 +517,15 @@ class Index extends React.Component {
     responseChangeUserInfo(byte) {
         const errorCode = parseInt(byte);
         if(errorCode === 0) {
-            alert('정보수정이 완료되었습니다.');
+            alert(this.props.langPack.alert.successChangeUserInfo);
             this.destroyModal();
             this.requestUserInfo();
         } else if(errorCode === 1) {
-            alert('비밀번호가 다릅니다.');
+            alert(this.props.langPack.alert.errorChangeUserInfoOne);
         } else if(errorCode === 2) {
-            alert('비밀번호는 4글자 이상입니다.');
+            alert(this.props.langPack.alert.errorChangeUserInfoTwo);
         } else {
-            alert('알수없는 오류입니다.');
+            alert(this.props.langPack.alert.default);
         }
     }
 
@@ -569,6 +575,7 @@ class Index extends React.Component {
             <div className={common.wrap}>
                 <div className={common.main}>
                     <IndexHeader
+                        langPack={this.props.langPack.header}
                         trademark={this.props.trademark}
                         userPoint={this.state.userPoint}
                         userCommission={this.state.userCommission}
@@ -581,6 +588,7 @@ class Index extends React.Component {
                     { 
                         this.state.chargeModal &&
                         <Charge
+                            langPack={this.props.langPack.charge}                            
                             webSocket={this.state.webSocket}
                             uniqueId={this.props.uniqueId}
                             type={this.state.chargeExchangeType}
@@ -599,6 +607,7 @@ class Index extends React.Component {
                     { 
                         this.state.exchangeModal &&
                         <Exchange
+                            langPack={this.props.langPack.exchange}
                             webSocket={this.state.webSocket}
                             uniqueId={this.props.uniqueId}
                             type={this.state.chargeExchangeType}
@@ -614,7 +623,9 @@ class Index extends React.Component {
                     { 
                         this.state.infochangeModal &&
                         <InfoChange
+                            langPack={this.props.langPack.infoChange}
                             userInfo={this.state.userInfo}
+                            userInfoReadOnly={this.state.userInfoReadOnly}
                             requestChangeUserInfo={(data) => this.requestChangeUserInfo(data)}
                             requestUserInfo={() => this.requestUserInfo()}
                             destroyModal={() => {this.destroyModal()}}
@@ -623,6 +634,7 @@ class Index extends React.Component {
                     {
                         !this.state.chargeModal && !this.state.exchangeModal && !this.state.infochangeModal &&
                         <GameSelectBox
+                            langPack={this.props.langPack.gameSelectBox}
                             certification={this.state.certification}
                             connectState={this.state.connectState}
                         />
@@ -638,6 +650,7 @@ ReactDOM.render(
     <Index
         trademark={sessionStorage.getItem('userId')}
         uniqueId={sessionStorage.getItem('uniqueId')}
+        langPack={sessionStorage.getItem('lang') === null ? LanguagePack.ko.lobby : LanguagePack[sessionStorage.getItem('lang')].lobby}
     />,
     document.getElementById('root')
 );

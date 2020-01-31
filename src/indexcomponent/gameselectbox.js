@@ -54,7 +54,7 @@ export default class GameSelectBox extends React.Component {
                         this.props.connectState.powerBall == 0 ? <div className={styles.prohibitionBox + ' ' + styles.examineImg}>
                         </div> : this.props.connectState.powerBall == 2 ? <div className={styles.prohibitionBox + ' ' + styles.prohibitionImg}>
                         </div> : <div className={styles.gameContentBox}>
-                        <span className={styles.gameTitle}>복권</span>
+                        <span className={styles.gameTitle}>{this.props.langPack.powerBall}</span>
                         </div> : ''
                     }
                 </div>
@@ -69,7 +69,7 @@ export default class GameSelectBox extends React.Component {
                         this.props.connectState.worldBall3 == 0 ? <div className={styles.prohibitionBox + ' ' + styles.examineImg}>
                         </div> : this.props.connectState.worldBall3 == 2 ? <div className={styles.prohibitionBox + ' ' + styles.prohibitionImg}>
                         </div> : <div className={styles.gameContentBox}>
-                        <span className={styles.gameTitle}>월드로또3분</span>
+                        <span className={styles.gameTitle}>{this.props.langPack.worldBall3}</span>
                         <img className={styles.minuteSymbol} src={require('../images/worldlotto_3m_symbol.png')}></img>
                         </div> : ''
                     }
@@ -85,7 +85,7 @@ export default class GameSelectBox extends React.Component {
                         this.props.connectState.worldBall5 == 0 ? <div className={styles.prohibitionBox + ' ' + styles.examineImg}>
                         </div> : this.props.connectState.worldBall5 == 2 ? <div className={styles.prohibitionBox + ' ' + styles.prohibitionImg}>
                         </div> : <div className={styles.gameContentBox}>
-                        <span className={styles.gameTitle}>월드로또5분</span>
+                        <span className={styles.gameTitle}>{this.props.langPack.worldBall5}</span>
                         <img className={styles.minuteSymbol} src={require('../images/worldlotto_5m_symbol.png')}></img>
                         </div> : ''
                     }
@@ -101,7 +101,7 @@ export default class GameSelectBox extends React.Component {
                         this.props.connectState.zombieDrop == 0 ? <div className={styles.prohibitionBox + ' ' + styles.examineImg}>
                         </div> : this.props.connectState.zombieDrop == 2 ? <div className={styles.prohibitionBox + ' ' + styles.prohibitionImg}>
                         </div> : <div className={styles.gameContentBox}>
-                        <span className={styles.gameTitle}>낙하</span>
+                        <span className={styles.gameTitle}>{this.props.langPack.zombieDrop}</span>
                         </div> : ''
                     }
                 </div>
@@ -116,7 +116,7 @@ export default class GameSelectBox extends React.Component {
                         this.props.connectState.zombieBreak == 0 ? <div className={styles.prohibitionBox + ' ' + styles.examineImg}>
                         </div> : this.props.connectState.zombieBreak == 2 ? <div className={styles.prohibitionBox + ' ' + styles.prohibitionImg}>
                         </div> : <div className={styles.gameContentBox}>
-                        <span className={styles.gameTitle}>격파</span>
+                        <span className={styles.gameTitle}>{this.props.langPack.zombieBreak}</span>
                         </div> : ''
                     }
                 </div>
@@ -131,7 +131,7 @@ export default class GameSelectBox extends React.Component {
                         this.props.connectState.rsp == 0 ? <div className={styles.prohibitionBox + ' ' + styles.examineImg}>
                         </div> : this.props.connectState.rsp == 2 ? <div className={styles.prohibitionBox + ' ' + styles.prohibitionImg}>
                         </div> : <div className={styles.gameContentBox}>
-                        <span className={styles.gameTitle}>가위바위보</span>
+                        <span className={styles.gameTitle}>{this.props.langPack.rsp}</span>
                         </div> : ''
                     }
                 </div>

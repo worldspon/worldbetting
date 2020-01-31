@@ -27,8 +27,8 @@ export default class GameResult extends React.Component {
                     <table className={styles.gameResultListTable}>
                         <thead>
                             <tr className={styles.gameResultTableHeader}>
-                                <th rowSpan='2' className={styles.gameCountTh}>회차</th>
-                                <th colSpan='2' className={styles.resultHeaderTh}>결과</th>
+                                <th rowSpan='2' className={styles.gameCountTh}>{this.props.langPack.round}</th>
+                                <th colSpan='2' className={styles.resultHeaderTh}>{this.props.langPack.result}</th>
                             </tr>
                             <tr className={styles.gameResultTableHeader}>
                                 <th className={styles.resultFirstTh}>{this.props.gameResultThText[0]}</th>

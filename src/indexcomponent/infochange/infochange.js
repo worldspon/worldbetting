@@ -12,7 +12,7 @@ export default class InfoChange extends React.Component {
         return (
             <div className={styles.infoChangeApplyBox}>
                 <div className={styles.infoChangeTitle}>
-                    <h1>정보수정</h1>
+                    <h1>{this.props.langPack.headLine}</h1>
                     <img
                         className={styles.cancelButton}
                         src={require('../../images/cancel_button.png')}
@@ -22,9 +22,11 @@ export default class InfoChange extends React.Component {
                 <div className={styles.infoChangeContentBox}>
                     <div className={styles.tapContentWrap}>
                         <InfoChangeContent
+                            langPack={this.props.langPack.content}
                             requestChangeUserInfo={(data) => this.props.requestChangeUserInfo(data)}
                             requestUserInfo={() => this.props.requestUserInfo()}
                             userInfo={this.props.userInfo}
+                            userInfoReadOnly={this.props.userInfoReadOnly}
                             destroyModal={() => {this.props.destroyModal()}} 
                         />
                     </div>

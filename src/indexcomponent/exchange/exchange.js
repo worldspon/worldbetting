@@ -23,7 +23,7 @@ export default class Exchange extends React.Component {
         return (
             <div className={styles.exChangeApplyBox}>
                 <div className={styles.exChangeTitle}>
-                    <h1>환전</h1>
+                    <h1>{this.props.langPack.headLine}</h1>
                     <img
                         className={styles.cancelButton}
                         src={require('../../images/cancel_button.png')}
@@ -37,14 +37,14 @@ export default class Exchange extends React.Component {
                             `${this.state.activeTap === 'apply' ? styles.activeTap : ''}`}
                             onClick={() => {this.changeTap('apply')}}
                             >
-                            <span>환전신청</span>
+                            <span>{this.props.langPack.exchangeApply}</span>
                         </div>
                         <div
                             className={styles.exChangeListTap + ' ' +
                             `${this.state.activeTap === 'list' ? styles.activeTap : ''}`}
                             onClick={() => {this.changeTap('list')}}
                             >
-                            <span>환전내역</span>
+                            <span>{this.props.langPack.exchangeList}</span>
                         </div>
                     </div>
                     <div className={styles.tapContentWrap}>
@@ -53,6 +53,7 @@ export default class Exchange extends React.Component {
                             (this.props.type === 1 &&
                             this.state.activeTap === 'apply') &&
                             <ApplyCoinType
+                                langPack={this.props.langPack.coinType}
                                 userPoint={this.props.userPoint}
                                 requestChargeExchange={(data) => this.props.requestChargeExchange(data)}
                                 destroyModal={() => this.props.destroyModal()}
@@ -62,6 +63,7 @@ export default class Exchange extends React.Component {
                             (this.props.type === 0 &&
                             this.state.activeTap === 'apply') &&
                             <ApplyAccountType
+                                langPack={this.props.langPack.accountType}
                                 userPoint={this.props.userPoint}
                                 requestChargeExchange={(data) => this.props.requestChargeExchange(data)}
                                 destroyModal={() => this.props.destroyModal()}
@@ -70,6 +72,7 @@ export default class Exchange extends React.Component {
                         {
                             this.state.activeTap === 'list' &&
                             <ListType
+                                langPack={this.props.langPack.listType}
                                 chargeExchangeListEndPage={this.props.chargeExchangeListEndPage}
                                 chargeExchangeList={this.props.chargeExchangeList}
                                 requestChargeExchangeListCount={(type) => this.props.requestChargeExchangeListCount(type)}

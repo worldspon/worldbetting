@@ -62,15 +62,20 @@ export default class SignUp extends React.Component {
         }
 
         if(userObject.id.length < 4) {
-            alert('ID를 4글자 이상 입력해주세요.');
+            // 아이디 네 자 이상
+            alert(this.props.langPack.alert.idLength);
         } else if(userObject.pw.length < 1) {
-            alert('비밀번호를 입력해주세요.');
+            // 비밀번호 네 자 이상
+            alert(this.props.langPack.alert.pwLength);
         } else if(userObject.pw !== this.state.signUpPwCheck) {
-            alert('비밀번호가 일치하지않습니다.');
+            // 비밀번호 불일치
+            alert(this.props.langPack.alert.pwCheck);
         } else if(userObject.tel.length < 10) {
-            alert('올바른 전화번호를 입력해주세요.');
+            // 전화번호 형식 오류
+            alert(this.props.langPack.alert.phCheck);
         } else if(userObject.recommend.length < 4) {
-            alert('추천인 아이디를 입력해주세요.');
+            // 추천인 아이디 미입력
+            alert(this.props.langPack.alert.noInputReferrer);
         } else {
             this.props.requestSignUp(userObject);
         }
@@ -84,49 +89,49 @@ export default class SignUp extends React.Component {
                         <input
                             className={this.state.signUpId.length <= 3 ? '' : this.props.checkInputClass}
                             type="text"
-                            placeholder="아이디"
+                            placeholder="ID"
                             maxLength="10"
                             ref={this.idInputRef}
                             onChange={(e) => this.signUpIdInputChange(e)}
                             value={this.state.signUpId}
                         />
                         <input
-                            className={this.state.signUpPw.length <= 0 ? '' : this.props.checkInputClass}
+                            className={this.state.signUpPw.length <= 3 ? '' : this.props.checkInputClass}
                             type="password"
-                            placeholder="비밀번호"
+                            placeholder="Password"
                             onChange={(e) => this.signUpPwInputChange(e)}
                             value={this.state.signUpPw}
                         />
                         <input
-                            className={this.state.signUpPwCheck.length === 0 ? '' : this.state.signUpPw === this.state.signUpPwCheck ? this.props.checkInputClass : ''}
+                            className={this.state.signUpPwCheck.length <= 3 ? '' : this.state.signUpPw === this.state.signUpPwCheck ? this.props.checkInputClass : ''}
                             type="password"
-                            placeholder="비밀번호확인"
+                            placeholder="Password"
                             onChange={(e) => this.signUpPwCheckInputChange(e)}
                             value={this.state.signUpPwCheck}
                         />
                         <input
                             className={this.state.signUpTel.length <= 9 ? '' : this.props.checkInputClass}
                             type="tel"
-                            placeholder="휴대폰번호"
+                            placeholder="Phone"
                             onChange={(e) => this.signUpTelInputChange(e)}
                             value={this.state.signUpTel}
                         />
                         <input
                             className={this.state.signUpRecommend.length <= 3 ? '' : this.props.checkInputClass}
                             type="text"
-                            placeholder="추천인아이디"
+                            placeholder="Referrer ID"
                             onChange={(e) => this.signUpRecommendInputChange(e)}
                             onKeyPress={(e) => e.key === 'Enter' ? this.createUserObject() : ''}
                             value={this.state.signUpRecommend}
                         />
-                        <button className={styles.signUpButton} onClick={() => this.createUserObject()}>가입하기</button>
+                        <button className={styles.signUpButton} onClick={() => this.createUserObject()}>{this.props.langPack.button.signUp}</button>
                     </div>
                 }
                 { this.props.signUpFlag &&
                     <div>
-                        <p className={styles.signUpMessage}>축하합니다.</p>
-                        <p className={styles.signUpMessage}>회원가입이 정상적으로 되었습니다.</p>
-                        <button className={styles.signUpButton} onClick={() => this.props.hideModal()}>확인</button>
+                        {/* <p className={styles.signUpMessage}>축하합니다.</p> */}
+                        <p className={styles.signUpMessage}>{this.props.langPack.paragraph}</p>
+                        <button className={styles.signUpButton} onClick={() => this.props.hideModal()}>{this.props.langPack.button.confirm}</button>
                     </div>
                 }
             </div>

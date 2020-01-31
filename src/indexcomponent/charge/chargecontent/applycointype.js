@@ -33,7 +33,7 @@ export default class ApplyTypeCoin extends React.Component {
             const qrURL = await QRCode.toDataURL(text);
             this.qrImg.current.src = qrURL;
         } catch (err) {
-            alert('QR코드 생성에 실패하였습니다.');
+            alert(this.props.langPack.alert.errorQRCode);
         }
     }
 
@@ -57,7 +57,7 @@ export default class ApplyTypeCoin extends React.Component {
         copyTextBox.select();
         document.execCommand('copy');
         document.body.removeChild(copyTextBox);
-        alert('지갑주소가 복사되었습니다.');
+        alert(this.props.langPack.alert.copyWallet);
     }
 
     // 유저 지갑주소를 최신화
@@ -81,7 +81,7 @@ export default class ApplyTypeCoin extends React.Component {
         // 검증을 위한 형 변환
         const userCoinQuantity = parseFloat(this.state.userCoinQuantity);
         if(userCoinQuantity <= 0 || isNaN(userCoinQuantity)) {
-            alert('올바른 수량을 입력해주세요.');
+            alert(this.props.langPack.alert.errorChargeQuantity);
             return false;
         }
         const data = `|1||${this.state.selectedCoinName}|${this.state.userCoinWallet}|${this.state.userCoinQuantity}|`;
@@ -133,12 +133,12 @@ export default class ApplyTypeCoin extends React.Component {
                         <select className={styles.companyCoinWallet} onChange={(e) => this.changeCoinIndex(e)}>
                             {coinList}
                         </select>
-                        <button className={styles.walletCopyButton} onClick={() => this.copyToClipBoard()}>복사</button>
+                        <button className={styles.walletCopyButton} onClick={() => this.copyToClipBoard()}>{this.props.langPack.copy}</button>
                     </div>
                     <div className={styles.walletInfoBox}>
                         <div className={styles.userCoinWrap}>
                             <div className={styles.userInputWrap}>
-                                <label htmlFor="userWallet">지갑주소</label>
+                                <label htmlFor="userWallet">{this.props.langPack.wallet}</label>
                                 <input
                                     type="text"
                                     name="userWallet"
@@ -147,7 +147,7 @@ export default class ApplyTypeCoin extends React.Component {
                                 />
                             </div>
                             <div className={styles.userInputWrap}>
-                                <label htmlFor="coinCount">수량</label>
+                                <label htmlFor="coinCount">{this.props.langPack.quantity}</label>
                                 <input
                                     type="text"
                                     name="coinCount"
@@ -159,8 +159,8 @@ export default class ApplyTypeCoin extends React.Component {
                         <img className={styles.qrCodeImg} ref={this.qrImg}></img>
                     </div>
                     <div className={styles.applyCancelBox}>
-                        <button className={styles.applyButton} onClick={() => {this.applyToCharge()}}>충전신청</button>
-                        <button className={styles.cancelButton} onClick={() => {this.props.destroyModal()}}>취소</button>
+                        <button className={styles.applyButton} onClick={() => {this.applyToCharge()}}>{this.props.langPack.applyCharge}</button>
+                        <button className={styles.cancelButton} onClick={() => {this.props.destroyModal()}}>{this.props.langPack.cancel}</button>
                     </div>
                 </div>
             </div>

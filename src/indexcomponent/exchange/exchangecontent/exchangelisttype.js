@@ -72,7 +72,7 @@ export default class ListType extends React.Component {
                 >
                     <td className={styles.userDeposit}>
                         <p className={styles.userDepositMoney}>{value.userPoint}원</p>
-                        <p className={styles.userDepositCoin}>{value.userCoin}코인</p>
+                        <p className={styles.userDepositCoin}>{value.userCoin}coin</p>
                     </td>
                     <td className={styles.accountInfo}>
                         <p className={styles.coinName}>{value.userBank}</p>
@@ -84,7 +84,7 @@ export default class ListType extends React.Component {
                         <p className={styles.applyDate}>{value.applyDate}</p>
                         <p className={styles.confirmDate}>{value.handleDate}</p>    
                     </td>
-                    <td className={styles.listState}>{value.applyState === 0 ? '대기' : value.applyState === 1 ? '완료' : '보류'}</td>
+                    <td className={styles.listState}>{value.applyState === 0 ? this.props.langPack.wait : value.applyState === 1 ? this.props.langPack.completion : this.props.langPack.hold}</td>
                 </tr>
             ));
         }
@@ -108,11 +108,11 @@ export default class ListType extends React.Component {
                 <table className={styles.applyListTable}>
                     <thead>
                         <tr>
-                            <th>신청금액</th>
-                            <th className={styles.pcTableElement}>계좌정보</th>
-                            <th className={styles.mobileTableElement}>신청정보</th>
-                            <th className={styles.pcTableElement}>신청/처리</th>
-                            <th>진행상태</th>
+                            <th>{this.props.langPack.applyMoney}</th>
+                            <th className={styles.pcTableElement}>{this.props.langPack.accountInfo}</th>
+                            <th className={styles.mobileTableElement}>{this.props.langPack.applyInfo}</th>
+                            <th className={styles.pcTableElement}>{this.props.langPack.result}</th>
+                            <th>{this.props.langPack.state}</th>
                         </tr>
                     </thead>
                     <tbody>

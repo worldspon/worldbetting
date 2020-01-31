@@ -28,14 +28,14 @@ export default class BettingResult extends React.Component {
                     <table className={styles.gameResultListTable}>
                         <thead>
                             <tr className={styles.gameResultTableHeader}>
-                                <th rowSpan='2' className={styles.gameCountTh}>회차</th>
-                                <th colSpan='4' className={styles.resultHeaderTh}>결과</th>
+                                <th rowSpan='2' className={styles.gameCountTh}>{this.props.langPack.round}</th>
+                                <th colSpan='4' className={styles.resultHeaderTh}>{this.props.langPack.resultTitle}</th>
                             </tr>
                             <tr className={styles.gameResultTableHeader}>
-                                <th className={styles.resultFirstTh}>베팅일시</th>
-                                <th className={styles.resultLastTh}>베팅타입</th>
-                                <th className={styles.resultLastTh}>베팅금액</th>
-                                <th className={styles.resultLastTh}>결과</th>
+                                <th className={styles.resultFirstTh}>{this.props.langPack.date}</th>
+                                <th className={styles.resultLastTh}>{this.props.langPack.type}</th>
+                                <th className={styles.resultLastTh}>{this.props.langPack.money}</th>
+                                <th className={styles.resultLastTh}>{this.props.langPack.result}</th>
                             </tr>
                         </thead>
                         <tbody>

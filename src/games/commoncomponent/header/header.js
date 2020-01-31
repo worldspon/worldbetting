@@ -31,17 +31,17 @@ export default class Header extends React.Component {
                     <div className={styles.mobileLogoBox} style={{backgroundImage: `url(${this.props.logoURL})`}}>
                         <div className={styles.mobileLogoutBox} onClick={() => this.props.tcpLogout()}>
                             <img className={styles.mobileLogoutIcon} src={require('../../../images/mobile_logout.png')} />
-                            <span>로그아웃</span>
+                            <span>{this.props.langPack.logout}</span>
                         </div>
                     </div>
                 }
                 <nav>
                     <ul className={styles.menuBox}>
-                        <li onClick={() => this.locationLobby()}>로비</li>
-                        <li onClick={() => this.props.showBettingResultComponent()}>베팅내역</li>
-                        <li onClick={() => this.props.showGameResultComponent()}>게임결과</li>
+                        <li onClick={() => this.locationLobby()}>{this.props.langPack.lobby}</li>
+                        <li onClick={() => this.props.showBettingResultComponent()}>{this.props.langPack.bettingList}</li>
+                        <li onClick={() => this.props.showGameResultComponent()}>{this.props.langPack.gameResult}</li>
                         {this.state.windowWidth > 1024 &&
-                            <li onClick={() => this.props.tcpLogout()}>로그아웃</li>
+                            <li onClick={() => this.props.tcpLogout()}>{this.props.langPack.logout}</li>
                         }
                     </ul>
                 </nav>

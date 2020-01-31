@@ -49,7 +49,7 @@ export default class ApplyCoinType extends React.Component {
         const exchangeMoney = parseFloat(this.state.exchangeMoney);
         // 0보다 작은금액 또는 숫자가 아닌 금액 또는 출금 가능금액 이하
         if(exchangeMoney <= 0 || isNaN(exchangeMoney) || this.props.userPoint < exchangeMoney) {
-            alert('올바른 금액을 입력해주세요.');
+            alert(this.props.langPack.alert.errorExchangeMoney);
             return false;
         } else if (this.inputCheck()) {
             const data = `|0||${this.state.coinName}|${this.state.coinWallet}|${this.state.exchangeMoney}|`;
@@ -57,7 +57,7 @@ export default class ApplyCoinType extends React.Component {
             this.props.requestChargeExchange(data);
             this.resetInput();
         } else {
-            alert('모든 값을 입력해주세요.');
+            alert(this.props.langPack.alert.errorExchangeInput);
         }
     }
 
@@ -86,35 +86,35 @@ export default class ApplyCoinType extends React.Component {
     render() {
         return (
             <div className={styles.coinTypeWrap}>
-                <p className={styles.possibleMoney}>출금 가능 금액 : {new Intl.NumberFormat().format(this.props.userPoint)}</p>
+                <p className={styles.possibleMoney}>{this.props.langPack.withdrawable} : {new Intl.NumberFormat().format(this.props.userPoint)}</p>
                 <div className={styles.accountRows}>
-                    <span className={styles.rowTitle}>코인명</span>
+                    <span className={styles.rowTitle}>{this.props.langPack.coinName}</span>
                     <input
                         type="text"
                         className={styles.exchangeCoin}
                         value={this.state.coinName}
                         onChange={(e) => this.setUserCoinName(e)}
-                        placeholder="코인명"
+                        placeholder="coin name"
                     />
                 </div>
                 <div className={styles.accountRows}>
-                    <span className={styles.rowTitle}>지갑주소</span>
+                    <span className={styles.rowTitle}>{this.props.langPack.wallet}</span>
                     <input
                         type="text"
                         className={styles.userWallet}
                         value={this.state.coinWallet}
                         onChange={(e) => this.setUserCoinWallet(e)}
-                        placeholder="지갑주소"
+                        placeholder="wallet"
                     />
                 </div>
                 <div className={styles.accountRows}>
-                    <span className={styles.rowTitle}>금액</span>
+                    <span className={styles.rowTitle}>{this.props.langPack.money}</span>
                     <input 
                         ype="text"
                         className={styles.exchangeMoney}
                         value={this.state.exchangeMoney}
                         onChange={(e) => this.setExchangeMoney(e)}
-                        placeholder="직접입력"
+                        placeholder="money"
                     />
                 </div>
                 <div className={styles.accountRows + ' ' + styles.moneyButtonWrap}>
@@ -145,8 +145,8 @@ export default class ApplyCoinType extends React.Component {
                     </button>
                 </div>
                 <div className={styles.applyCancelBox}>
-                    <button className={styles.applyButton} onClick={() => this.applyToExchange()}>환전신청</button>
-                    <button className={styles.cancelButton} onClick={() => {this.props.destroyModal()}}>취소</button>
+                    <button className={styles.applyButton} onClick={() => this.applyToExchange()}>{this.props.langPack.applyExchange}</button>
+                    <button className={styles.cancelButton} onClick={() => {this.props.destroyModal()}}>{this.props.langPack.cancel}</button>
                 </div>
             </div>
         )
