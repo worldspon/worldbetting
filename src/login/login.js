@@ -59,6 +59,7 @@ class Login extends React.Component {
     async getConnectCode() {
         try {
             const sendObject = {
+                // 로컬작업용
                 // url: 'www.wbet2020.com'
                 url: this.getConnectURL()
             };
