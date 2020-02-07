@@ -165,7 +165,8 @@ const languagePack = {
         rsp: "가위바위보"
       },
       alert: {
-        sysEnvChange: "시스템 환경이 변경되어 로그인 화면으로 이동합니다.",
+        sysEnvChange:
+          "환경설정이 변경되었습니다.\n정확한 값을 적용받기위하여 다시 로그인하여 주세요.",
         receiveMoney: "관리자로부터 보유머니를 충전받았습니다.",
         chargeSuccess: "충전되었습니다",
         exchangeFailed: "환전신청이 취소되었습니다.",

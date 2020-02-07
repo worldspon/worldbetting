@@ -171,11 +171,11 @@ class WorldLotto5M extends React.Component {
             this.responseChangeExchangeAction(ary.slice(7, ary.length - 5));
           } else if (command === "9000100") {
             alert(this.props.langPack.alert.sysEnvChange);
-            tcpLogout(
-              this.state.webSocket,
-              this.props.uniqueId,
-              this.props.trademark
-            );
+            // tcpLogout(
+            //   this.state.webSocket,
+            //   this.props.uniqueId,
+            //   this.props.trademark
+            // );
             // 관리자에게 금액 받음
           } else if (command === "9000400") {
             this.responseReceiveMoney(ary.slice(7, ary.length - 5));
