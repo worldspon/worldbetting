@@ -42,6 +42,7 @@ import responseBettingResultCount from "../../commonfunction/responsebettingresu
 // 과거 베팅 리스트
 import responseBettingResult from "../../commonfunction/responsebettingresult";
 import searchBettingType from "../../commonfunction/searchbettingtype";
+import requestLevelCheck from "../../commonfunction/requestlevelcheck";
 import Header from "../commoncomponent/header/header";
 import BettingBox from "../commoncomponent/bettingbox/bettingbox";
 // GameBetting Tag에 props로 보내기 위한 TypePad Tag
@@ -68,6 +69,7 @@ class ZombieBreak extends React.Component {
       userPoint: 0,
       userCommission: 0,
       userBonus: 0,
+      userLevel: Number.parseInt(sessionStorage.getItem("level")) | 0,
       gameType: 5,
       gameTitle: "ZombieBreak",
       // 게임 회차
@@ -128,7 +130,13 @@ class ZombieBreak extends React.Component {
             this.handleLoginCheckResult(ary.slice(7, ary.length - 5));
             // 사용자 레벨업
           } else if (command === "1000300") {
-            this.levelUp(ary.slice(7, ary.length - 5));
+            const levelUpFlag = this.levelUp(
+              this.state.userLevel,
+              ary.slice(7, ary.length - 5)
+            );
+            if (levelUpFlag) {
+              requestUserGameInfo(webSocket, this.props.uniqueId);
+            }
             // 유저 위치 변경
           } else if (command === "1003000") {
             this.responseSetUserState(ary.slice(7, ary.length - 5));
@@ -184,6 +192,8 @@ class ZombieBreak extends React.Component {
               bettingList: []
             });
             requestUserPointDB(this.state.webSocket, this.props.uniqueId);
+          } else if (command === "1180000") {
+            requestLevelCheck(webSocket, this.props.uniqueId);
           }
         }
       });
@@ -207,9 +217,17 @@ class ZombieBreak extends React.Component {
     });
   }
 
-  levelUp(byteArray) {
-    const content = decodeUTF16(byteArray.slice(3)).split("|");
-    sessionStorage.setItem("level", content[1]);
+  levelUp(userLevel, byteArray) {
+    const content = Number.parseInt(decodeUTF16(byteArray.slice(3)).split("|"));
+    if (userLevel && userLevel !== content) {
+      //   console.log(`getLevel : ${content}`);
+      sessionStorage.setItem("level", content);
+      //   console.log(
+      //     `sessionStorage.getItem(level) : ${sessionStorage.getItem("level")}`
+      //   );
+      return true;
+    }
+    return false;
   }
 
   responseReceiveMoney(byteArray) {
