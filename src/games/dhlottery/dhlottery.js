@@ -123,11 +123,14 @@ class DHLottry extends React.Component {
 
         for (const ary of dataArray) {
           const command = decodeUTF8(ary.slice(0, 7));
-          console.log(`command : ${command}`);
-          console.log(`ary : ${ary}`);
+          // console.log(`command : ${command}`);
+          // console.log(`ary : ${ary}`);
           // 로그인 검증
           if (command === "1000020") {
             this.handleLoginCheckResult(ary.slice(7, ary.length - 5));
+            // 사용자 레벨업
+          } else if (command === "1000300") {
+            this.levelUp(ary.slice(7, ary.length - 5));
             // 유저 위치 변경
           } else if (command === "1003000") {
             this.responseSetUserState(ary.slice(7, ary.length - 5));
@@ -136,6 +139,7 @@ class DHLottry extends React.Component {
             this.setGameInfo(ary.slice(7, ary.length - 5));
             // 유저 게임 환경 세팅
           } else if (command === "1015000") {
+            // console.log(`ary: ${ary.slice(7, ary.length - 5)}`);
             this.setUserGameInfo(ary.slice(7, ary.length - 5));
             // 유저 금액 최신화
           } else if (command === "1001000" || command === "1001500") {
@@ -151,10 +155,10 @@ class DHLottry extends React.Component {
             this.setGameCount(ary.slice(7, ary.length - 5));
             //게임 베팅
           } else if (command === "1170000") {
-            console.log(
-              "command: 1170000 / ary: ",
-              ary.slice(7, ary.length - 5)
-            );
+            // console.log(
+            //   "command: 1170000 / ary: ",
+            //   ary.slice(7, ary.length - 5)
+            // );
             this.responseGameBetting(ary.slice(7, ary.length - 5));
             // 베팅 리스트 호출
           } else if (command === "1171000") {
@@ -208,6 +212,11 @@ class DHLottry extends React.Component {
       // 로그인 검증
       tcpLoginCheck(webSocket);
     });
+  }
+
+  levelUp(byteArray) {
+    const content = decodeUTF16(byteArray.slice(3)).split("|");
+    sessionStorage.setItem("level", content[1]);
   }
 
   responseReceiveMoney(byteArray) {
@@ -383,18 +392,20 @@ class DHLottry extends React.Component {
   // 유저 환경 세팅
   // 게임순서 : 파워볼 / 5분 / 3분 / 낙하 / 격파 / 가위바위보
   // (최대베팅[1], 최소베팅[1] x10)x6 / [96]배당률[1] x10 / [156]총베팅제한
+  // ([0]최대베팅 -[1], [1]최소베팅[1] x10)x6 / [120]배당률[1] x13 / [198]총베팅제한 x 6
   setUserGameInfo(byteArray) {
     const errorCode = parseInt(byteArray.slice(0, 1));
     if (errorCode === 0) {
       const content = decodeUTF16(byteArray.slice(3)).split("|");
-      // const maxMinBetting = content.slice(32, 48);
-      // const allocation = content.slice(116, 126);
-      // const totalBettingLimit = content.slice(158, 159);
 
-      console.log("setUserGameInfo / totalBettingLimit: ", content[180]);
+      // console.log(`content : ${content}`);
+
+      // console.log(`minMaxBetting : ${content.slice(0, 20)}`);
+      // console.log(`allocation : ${content.slice(120, 133)}`);
+      // console.log(`totalBettingLimit : ${content[180]}`);
       this.setState({
         minMaxBetting: content.slice(0, 20),
-        allocation: content.slice(120, 130),
+        allocation: content.slice(120, 133),
         totalBettingLimit: content[180]
       });
     } else {
@@ -557,13 +568,13 @@ class DHLottry extends React.Component {
       this.state.bettingMoney > this.state.bettingMax
     ) {
       // this.state.totalBettingLimit = 최대 베팅 가능 금액 / 0인 경우 베팅 가능 금액은 무한
-      console.log(`bettingMoney: ${this.state.bettingMoney}`);
-      console.log(`totalBettingLimit: ${this.state.totalBettingLimit}`);
-      console.log(
-        `currentTotalBettingMoney: ${this.state.currentTotalBettingMoney}`
-      );
-      console.log(`bettingMin: ${this.state.bettingMin}`);
-      console.log(`bettingMax: ${this.state.bettingMax}`);
+      // console.log(`bettingMoney: ${this.state.bettingMoney}`);
+      // console.log(`totalBettingLimit: ${this.state.totalBettingLimit}`);
+      // console.log(
+      //   `currentTotalBettingMoney: ${this.state.currentTotalBettingMoney}`
+      // );
+      // console.log(`bettingMin: ${this.state.bettingMin}`);
+      // console.log(`bettingMax: ${this.state.bettingMax}`);
       alert(this.props.langPack.alert.errorImpossibleBetMoney);
     } else {
       requestGameBetting(
@@ -578,7 +589,7 @@ class DHLottry extends React.Component {
 
   responseGameBetting(byteArray) {
     const errorCode = parseInt(byteArray.slice(0, 1));
-    console.log("responseGameBetting errorCode: ", errorCode);
+    // console.log("responseGameBetting errorCode: ", errorCode);
     if (errorCode == 0) {
       this.state.resultPrint &&
         printReceipt(
@@ -607,6 +618,8 @@ class DHLottry extends React.Component {
       alert(this.props.langPack.alert.errorBetPrevRound);
     } else if (errorCode == 8) {
       alert(this.props.langPack.alert.errorBetBalance);
+    } else if (errorCode == 9) {
+      alert(this.props.langPack.alert.errorBetMultiBlock);
     } else if (errorCode == 250 || errorCode == 255) {
       alert(this.props.langPack.alert.errorConnectDB);
     } else {
@@ -617,6 +630,12 @@ class DHLottry extends React.Component {
   responseBettingList(byteArray) {
     const listArray = [...this.state.bettingList];
     listArray.push(...parseBettingList(byteArray.slice(3)));
+
+    // listArray.forEach(item => {
+    //   console.log(`item.listUnique : ${item.listUnique}`);
+    //   console.log(`item.bettingType : ${item.bettingType}`);
+    //   console.log(`item.bettingMoney : ${item.bettingMoney}`);
+    // });
 
     this.setState({
       bettingList: listArray
