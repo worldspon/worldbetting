@@ -23,6 +23,7 @@ function getConnectURL() {
   }
 }
 
+// 운영용
 const webSocketIp = `ws://${getConnectURL()}:80/`;
 // 로컬 작업용
 // const webSocketIp = "ws://192.168.0.24:8803/";

@@ -18,8 +18,10 @@ class GatewaySocket {
       const endSignal = encodeUTF8("<End>");
       // 운영
       const content = encodeUTF16("8000|");
-      // 테스트
-      //   const content = encodeUTF16("8001|");
+      // 권학재 이사님 테스트 서버
+      // const content = encodeUTF16("8001|");
+      // 사내 테스트 서버
+      // const content = encodeUTF16("18000|");
       const sendStream = Buffer.from(command.concat(content).concat(endSignal));
       this.gateWaySocket.write(sendStream);
     });
@@ -58,6 +60,7 @@ class WebSocket {
 
     console.log("tcpIp :", tcpIp);
     console.log("tcpPort :", tcpPort);
+    console.log("uuid : ", uuid);
 
     // 생성된 UUID로 소켓 채널 생성
     this.socketClass = io.of(`/${uuid}`);

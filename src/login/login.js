@@ -69,8 +69,9 @@ class Login extends React.Component {
     try {
       const sendObject = {
         // 로컬작업용
-        url: "www.wbet2020.com"
-        // url: this.getConnectURL()
+        // url: "www.wbet2020.com"
+        // 운영용
+        url: this.getConnectURL()
       };
       const promiseResult = await promiseModule.post(
         "/api/connect/information",
