@@ -130,7 +130,9 @@ class Index extends React.Component {
 
       webSocket.on("disconnect", message => {
         sessionStorage.clear();
-        alert(message);
+        if (message) {
+          alert(message);
+        }
         location.href = "/login";
       });
 
@@ -193,7 +195,8 @@ class Index extends React.Component {
           // 기간이 만료된 세션
           this.state.webSocket.emit(
             "disconnect",
-            this.props.langPack.alert.loginCheckFail
+            ""
+            // this.props.langPack.alert.loginCheckFail
           );
           sessionStorage.clear();
           location.href = "/login";
