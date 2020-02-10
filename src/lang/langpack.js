@@ -178,6 +178,7 @@ const languagePack = {
         errorChargeExchangeOne: "로비에서만 신청이 가능합니다.",
         errorChargeExchangeTwo: "올바르지 않은 금액입니다.",
         errorChargeExchangeThree: "환전 금액이 부족합니다.",
+        errorAppliedChargeExchange: "이미 충전이 신청된 상태입니다.",
         errorChargeExchangeDB:
           "통신이 원활하지 않아 잠시후에 다시 시도해주세요.(DB)",
         successChangeUserInfo: "정보수정이 완료되었습니다.",
