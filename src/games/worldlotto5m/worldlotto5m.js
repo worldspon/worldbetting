@@ -108,7 +108,9 @@ class WorldLotto5M extends React.Component {
       bettingListStore: [],
       // 이전회차 게임 결과
       prevGameResult: null,
-      resultPrint: false
+      resultPrint: false,
+      // 베팅 취소 허용
+      bettingCancel: true
     };
   }
 
@@ -379,7 +381,7 @@ class WorldLotto5M extends React.Component {
       const bettingAllowTime = content.slice(0, 12);
       const balance = content.slice(12, 60);
       const powerBall = content.slice(60, 64);
-      const cancelAllow = content.slice(64);
+      const cancelAllow = content.slice(66, 82);
       // console.log(bettingAllowTime);
       // console.log(balance);
       // console.log(powerBall);
@@ -387,7 +389,8 @@ class WorldLotto5M extends React.Component {
 
       this.setState({
         bettingAllowStart: bettingAllowTime[2],
-        bettingAllowEnd: bettingAllowTime[3]
+        bettingAllowEnd: bettingAllowTime[3],
+        bettingCancel: cancelAllow[1]
       });
     } else {
       console.log("실패");

@@ -108,7 +108,9 @@ class RSPGame extends React.Component {
       bettingListStore: [],
       // 이전회차 게임 결과
       prevGameResult: null,
-      resultPrint: false
+      resultPrint: false,
+      // 베팅 취소 허용
+      bettingCancel: true
     };
   }
 
@@ -380,7 +382,7 @@ class RSPGame extends React.Component {
       const bettingAllowTime = content.slice(0, 12);
       const balance = content.slice(12, 60);
       const powerBall = content.slice(60, 64);
-      const cancelAllow = content.slice(64);
+      const cancelAllow = content.slice(66, 82);
       // console.log(bettingAllowTime);
       // console.log(balance);
       // console.log(powerBall);
@@ -388,7 +390,8 @@ class RSPGame extends React.Component {
 
       this.setState({
         bettingAllowStart: bettingAllowTime[10],
-        bettingAllowEnd: bettingAllowTime[11]
+        bettingAllowEnd: bettingAllowTime[11],
+        bettingCancel: cancelAllow[5]
       });
     } else {
       console.log("실패");

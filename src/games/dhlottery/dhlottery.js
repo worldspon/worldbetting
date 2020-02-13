@@ -108,7 +108,9 @@ class DHLottry extends React.Component {
       bettingListStore: [],
       // 이전회차 게임 결과
       prevGameResult: null,
-      resultPrint: false
+      resultPrint: false,
+      // 베팅 취소 허용
+      bettingCancel: true
     };
   }
 
@@ -391,15 +393,17 @@ class DHLottry extends React.Component {
       const bettingAllowTime = content.slice(0, 12);
       const balance = content.slice(12, 60);
       const powerBall = content.slice(60, 64);
-      const cancelAllow = content.slice(64);
-      // console.log(bettingAllowTime);
-      // console.log(balance);
-      // console.log(powerBall);
-      // console.log(cancelAllow);
+      const cancelAllow = content.slice(66, 82);
+      // console.log("content :", content);
+      // console.log("bettingTime: ", bettingAllowTime);
+      // console.log("balance: ", balance);
+      // console.log("powerball: ", powerBall);
+      // console.log("cancelAllow: ", cancelAllow);
 
       this.setState({
         bettingAllowStart: bettingAllowTime[0],
-        bettingAllowEnd: bettingAllowTime[1]
+        bettingAllowEnd: bettingAllowTime[1],
+        bettingCancel: cancelAllow[0]
       });
     } else {
       console.log("실패");

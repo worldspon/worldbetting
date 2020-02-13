@@ -108,7 +108,9 @@ class ZombieBreak extends React.Component {
       bettingListStore: [],
       // 이전회차 게임 결과
       prevGameResult: null,
-      resultPrint: false
+      resultPrint: false,
+      // 베팅 취소 허용
+      bettingCancel: true
     };
   }
 
@@ -382,7 +384,7 @@ class ZombieBreak extends React.Component {
       const bettingAllowTime = content.slice(0, 12);
       const balance = content.slice(12, 60);
       const powerBall = content.slice(60, 64);
-      const cancelAllow = content.slice(64);
+      const cancelAllow = content.slice(66, 82);
       // console.log(bettingAllowTime);
       // console.log(balance);
       // console.log(powerBall);
@@ -390,7 +392,8 @@ class ZombieBreak extends React.Component {
 
       this.setState({
         bettingAllowStart: bettingAllowTime[8],
-        bettingAllowEnd: bettingAllowTime[9]
+        bettingAllowEnd: bettingAllowTime[9],
+        bettingCancel: cancelAllow[4]
       });
     } else {
       console.log("실패");
