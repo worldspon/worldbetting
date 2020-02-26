@@ -9,6 +9,14 @@ const proxy = require("express-http-proxy");
 // http server를 socket.io server로 upgrade한다
 const { GatewaySocket } = require("./socket");
 
+// 로컬 테스트용
+// app.get("/api/*", proxy("http://localhost:6060"));
+// app.post("/api/*", proxy("http://localhost:6060"));
+// app.patch("/api/*", proxy("http://localhost:6060"));
+// app.put("/api/*", proxy("http://localhost:6060"));
+// app.delete("/api/*", proxy("http://localhost:6060"));
+
+// 운영 서버용
 app.get("/api/*", proxy("http://211.192.165.100:6061"));
 app.post("/api/*", proxy("http://211.192.165.100:6061"));
 app.patch("/api/*", proxy("http://211.192.165.100:6061"));
@@ -21,10 +29,10 @@ app.get("/", (req, res) => {
 });
 
 // 운영
-app.use(express.static("../build"));
+// app.use(express.static("../build"));
 
 // 테스트
-// app.use(express.static(path.join(__dirname, "../build")));
+app.use(express.static(path.join(__dirname, "../build")));
 
 app.get("/guide", (req, res) => {
   res.sendFile(path.join(__dirname, "../build/guide/guide.html"));

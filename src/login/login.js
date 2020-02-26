@@ -37,7 +37,13 @@ class Login extends React.Component {
       // 계정찾기 완료시 계정 저장
       findAccount: null,
       // 회원가입 완료시 회원가입 축하 화면 flag
-      signUpFlag: false
+      signUpFlag: false,
+      // 카카오 아이디 정보
+      kakaoID: "",
+      // 텔레그램 아이디 정보
+      telegramID: "",
+      // 웹 기능 사용 여부
+      webUse: false
     };
     this.pwInput = React.createRef();
     this.loginButton = React.createRef();
@@ -61,6 +67,30 @@ class Login extends React.Component {
       return "www.wbc20.com";
     } else if (url.includes("wbc20.net")) {
       return "www.wbc20.net";
+    }
+  }
+
+  async getSNSId() {
+    try {
+      const sendObject = {
+        // 로컬작업용
+        // url: "www.wbet2020.com"
+        // 운영용
+        url: this.getConnectURL()
+      };
+
+      const promiseResult = await promiseModule.post("/api/snsId", sendObject);
+      const response = JSON.parse(promiseResult);
+
+      if (response && response.snsId) {
+        this.setState({
+          kakaoID: response.snsId._KAKAO,
+          telegramID: response.snsId._TELEGRAM,
+          webUse: response.snsId._WEB_USE
+        });
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -172,14 +202,18 @@ class Login extends React.Component {
 
   // 로그인 시도
   tryLogin() {
-    this.loginButton.current.disabled = true;
-    const command = encodeUTF8("1000010");
-    const content = encodeUTF16(
-      this.state.connectCode + `|${this.state.userId}|${this.state.userPw}|`
-    );
-    const endSignal = encodeUTF8("<End>");
-    const sendData = command.concat(content).concat(endSignal);
-    this.state.webSocket.emit("tcpsend", sendData);
+    if (!this.state.webUse) {
+      alert(this.props.langPack.alert.noWebUse);
+    } else {
+      this.loginButton.current.disabled = true;
+      const command = encodeUTF8("1000010");
+      const content = encodeUTF16(
+        this.state.connectCode + `|${this.state.userId}|${this.state.userPw}|`
+      );
+      const endSignal = encodeUTF8("<End>");
+      const sendData = command.concat(content).concat(endSignal);
+      this.state.webSocket.emit("tcpsend", sendData);
+    }
   }
 
   // 로그인 인증 성공시 필요 데이터 통신 시작
@@ -416,18 +450,26 @@ class Login extends React.Component {
 
   // 회원가입 모달 생성
   showSignUpModal() {
-    this.resetInputValue();
-    this.setState({
-      modal: "signUp"
-    });
+    if (!this.state.webUse) {
+      alert(this.props.langPack.alert.noWebUse);
+    } else {
+      this.resetInputValue();
+      this.setState({
+        modal: "signUp"
+      });
+    }
   }
 
   // 계정찾기 모달 생성
   showFindAccountModal() {
-    this.resetInputValue();
-    this.setState({
-      modal: "findAccount"
-    });
+    if (!this.state.webUse) {
+      alert(this.props.langPack.alert.noWebUse);
+    } else {
+      this.resetInputValue();
+      this.setState({
+        modal: "findAccount"
+      });
+    }
   }
 
   // 모달 숨김
@@ -438,6 +480,8 @@ class Login extends React.Component {
   }
 
   componentDidMount() {
+    // SNS 계정 정보 조회 요청
+    this.getSNSId();
     // URL별로 다른 연결 코드를 HTTP 통신으로 가져옴
     this.getConnectCode();
     // web socket 연결
@@ -604,6 +648,16 @@ class Login extends React.Component {
             className={styles.flagImage}
             onClick={() => this.changeLanguage("jp")}
           />
+        </div>
+        <div className={styles.snsBox}>
+          <p className={styles.sns}>
+            <img src={require("../images/kakao.png")} />
+            {this.state.kakaoID}
+          </p>
+          <p className={styles.sns}>
+            <img src={require("../images/telegram.png")} />
+            {this.state.telegramID}
+          </p>
         </div>
 
         {this.state.modal !== false && (

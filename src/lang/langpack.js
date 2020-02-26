@@ -50,6 +50,7 @@ const languagePack = {
         noReferrer: "추천인 아이디가 존재하지않습니다.",
         existId: "이미 사용하고 있는 아이디입니다.",
         existPh: "이미 사용하고 있는 전화번호입니다.",
+        noWebUse: "아래 'PC버전' 또는 '모바일 버전'을 이용해주세요.",
         default: "알수없는 오류입니다."
       }
     },
